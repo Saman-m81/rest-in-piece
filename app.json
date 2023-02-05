@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "rest-in-piece",
+    "slug": "rest-in-piece",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
