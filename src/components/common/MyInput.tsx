@@ -5,15 +5,25 @@ interface Props {
   type?: boolean;
   InputStyle?: StyleProp<TextStyle>;
   placeholder?: string;
+  value?: string;
+  onChangeText?: ((text: string) => void) | undefined;
 }
 
-const MyInput: FC<Props> = ({ InputStyle, type, placeholder }) => {
+const MyInput: FC<Props> = ({
+  InputStyle,
+  type,
+  placeholder,
+  value,
+  onChangeText,
+}) => {
   return (
     <>
       <TextInput
         placeholder={placeholder}
         style={InputStyle}
         secureTextEntry={type}
+        value={value}
+        onChangeText={onChangeText}
       />
     </>
   );

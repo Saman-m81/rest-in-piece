@@ -3,6 +3,14 @@ import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Navigator } from "../components/navigation/Navigator";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false, refetchOnWindowFocus: false },
+    mutations: { retry: false },
+  },
+});
+
 const App: FC = () => {
   const [show, setShow] = useState<boolean>(true);
   useEffect(() => {
@@ -10,12 +18,6 @@ const App: FC = () => {
       setShow(false);
     }, 1500);
   }, []);
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false, refetchOnWindowFocus: false },
-      mutations: { retry: false },
-    },
-  });
   return (
     <>
       <QueryClientProvider client={queryClient}>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React, { FC, useEffect, useState } from "react";
 import Heart from "../../../assets/image/like.svg";
 import RedHeart from "../../../assets/image/redHeart.svg";
@@ -7,6 +7,7 @@ import Doctor from "../../../assets/image/doctor.svg";
 import Plus from "../../../assets/image/plus.svg";
 import { HandleDescription } from "../../common/handleDec";
 import CustomeText from "../../common/CustomeText";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {
   index: number;
@@ -25,6 +26,8 @@ interface items {
 const CourseCard: FC<Props> = ({ item, index }) => {
   const [heart, setHeart] = useState<boolean>(false);
   const [err, setErr] = useState<boolean>(false);
+  const navigation = useNavigation();
+
   const Course = item as items;
   return (
     <>
@@ -106,7 +109,8 @@ const CourseCard: FC<Props> = ({ item, index }) => {
                 <Coin />
               </View>
             </View>
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate("CourseDetail")}
               style={{
                 alignSelf: "flex-start",
                 width: 35,
@@ -119,7 +123,7 @@ const CourseCard: FC<Props> = ({ item, index }) => {
               }}
             >
               <Plus />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.img}>

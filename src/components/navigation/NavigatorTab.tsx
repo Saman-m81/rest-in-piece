@@ -86,6 +86,11 @@ const NavigatorTab: FC = ({ navigation }) => {
             Anim(HeightDecrease, navHeight, 500);
             Anim(PaddingDecrease, 0, 500);
           },
+          focus: () => {
+            setClick(true);
+            Anim(HeightDecrease, courseNavHeight, 0);
+            Anim(PaddingDecrease, navHeight, 0);
+          },
         }}
         options={{
           tabBarIcon: ({ focused }) => {

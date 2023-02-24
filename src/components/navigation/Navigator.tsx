@@ -9,10 +9,15 @@ import SignUpStep1Layout from "../Log/SignUp/SignUpStep1Layout";
 import SignUpStep2Layout from "../Log/SignUp/SignUpStep2Layout";
 import ResetPassLayout from "../Log/ResetPass/ResetPassLayout";
 import NavigatorDrawer from "./NavigatorDrawer";
+import CourseDetail from "./../Landing/Courses/CourseDetail";
+import { View, useWindowDimensions } from "react-native";
+import Navbar from "../Landing/Courses/Navbar";
 
 const Stack = createNativeStackNavigator();
 
 const Navigator: FC = () => {
+  const { height, width } = useWindowDimensions();
+  const navbarHeight = (31 * height) / 100;
   return (
     <NavigationContainer>
       <Stack.Navigator

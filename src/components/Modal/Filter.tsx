@@ -1,19 +1,17 @@
 import {
   Pressable,
   StyleProp,
-  StyleSheet,
   View,
   ViewStyle,
-  Button,
   TouchableOpacity,
   useWindowDimensions,
+  GestureResponderEvent,
 } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import CustomeText from "../common/CustomeText";
-import Modal from "react-native-modal";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import ArrowDown from "../../assets/image/arrowDown.svg";
-import { SvgProps } from "react-native-svg";
+import ModalWrapper from "../common/ModalWrapper";
 
 interface Props {
   visible: boolean;
@@ -24,33 +22,8 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
   const { height } = useWindowDimensions();
   return (
     <>
-      <Modal
-        backdropColor="rgba(0,57,152,.55)"
-        onBackButtonPress={() => setVisible(false)}
-        deviceHeight={height + 50}
-        statusBarTranslucent
-        animationIn={"fadeInLeftBig"}
-        animationOut={"fadeOutRightBig"}
-        animationOutTiming={1000}
-        animationInTiming={1000}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: "8%",
-          paddingVertical: "8.5%",
-        }}
-        isVisible={visible}
-      >
-        <View
-          style={{
-            borderRadius: 30,
-            backgroundColor: "white",
-            width: "100%",
-            // height: "100%",
-            paddingHorizontal: "10%",
-            paddingVertical: "5.5%",
-          }}
-        >
+      <ModalWrapper setVisible={setVisible} visible={visible}>
+        <View>
           <CustomeCategory title="مرتب سازی" />
           <CustomeCategory title="روند نمایش" />
           <View
@@ -134,26 +107,24 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </ModalWrapper>
     </>
   );
 };
-// react - native - skeleton - placeholder
-// native - base(modal)
-// react+native+multi+slider npm pto
-// bottom sheet modal
 
 export default Filter;
 
-const styles = StyleSheet.create({});
 interface Props2 {
   title: string;
   style?: StyleProp<ViewStyle>;
+  onPress?: ((event: GestureResponderEvent) => void) | null | undefined;
 }
-const CustomeCategory: FC<Props2> = ({ title, style }) => {
+const CustomeCategory: FC<Props2> = ({ title, style, onPress }) => {
+  const [visible, setVisible] = useState<boolean>(false);
   return (
     <>
       <Pressable
+        onPress={onPress}
         style={[
           {
             width: "100%",

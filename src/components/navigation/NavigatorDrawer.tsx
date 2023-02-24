@@ -1,6 +1,7 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { FC } from "react";
 import { View } from "react-native";
+import CourseDetail from "../Landing/Courses/CourseDetail";
 import NavigatorTab from "./NavigatorTab";
 
 const NavigatorDrawer: FC = () => {
@@ -27,6 +28,7 @@ const NavigatorDrawer: FC = () => {
       }}
     >
       <Drawer.Screen name="drawer" component={NavigatorTab} />
+      <Drawer.Screen name="CourseDetail" component={CourseDetail} />
     </Drawer.Navigator>
   );
 };

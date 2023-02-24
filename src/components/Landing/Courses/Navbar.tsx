@@ -9,6 +9,7 @@ import React, { FC, useEffect, useState } from "react";
 import {
   ParamListBase,
   RouteProp,
+  useIsFocused,
   useNavigation,
 } from "@react-navigation/native";
 import { Anim } from "../../common/Animation";
@@ -40,6 +41,7 @@ const Navbar: FC<Props> = ({
   navHeight,
 }) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [modal, setModal] = useState<boolean>(false);
 
   useEffect(() => {

@@ -8,13 +8,20 @@ import {
 import React, { FC } from "react";
 import SearchIcon from "../../../assets/image/search.svg";
 import MyInput from "../MyInput";
+import { observer, inject } from "mobx-react";
+import MyStore from "../../../store/Store";
 
 type Props = {};
 
 const Search: FC<Props> = ({}) => {
   return (
     <KeyboardAvoidingView style={styles.holder}>
-      <MyInput placeholder="جستجو ..." InputStyle={styles.input} />
+      <MyInput
+        placeholder="جستجو ..."
+        InputStyle={styles.input}
+        value={MyStore?.getSomeData()}
+        onChangeText={(text) => MyStore?.setSomeData(text)}
+      />
       <View style={styles.icon}>
         <SearchIcon />
       </View>
@@ -22,7 +29,7 @@ const Search: FC<Props> = ({}) => {
   );
 };
 
-export default Search;
+export default observer(Search);
 
 const styles = StyleSheet.create({
   holder: { width: "65%", overflow: "hidden" },

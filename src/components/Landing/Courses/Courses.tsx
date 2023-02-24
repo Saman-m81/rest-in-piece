@@ -14,55 +14,53 @@ import CustomText from "../../common/CustomeText";
 import ArrowRefresh from "../../../assets/image/spinner.svg";
 import { AnimLoop } from "../../common/Animation";
 import SkeletonCourseItem from "../../common/SkeletonCourseItem";
+import { useDebounce } from "use-debounce";
+import MyStore from "../../../store/Store";
+import { useIsFocused } from "@react-navigation/native";
+import { inject, observer } from "mobx-react";
 
-type Props = {};
-interface Item {
-  courses: Array<object>;
-  count: number;
+interface ItemCourses {
+  title: string;
+  teacher: {
+    fullName: string;
+  };
+  cost: number;
 }
 
-const Courses: FC<Props> = ({}) => {
+const Courses: FC = ({}) => {
+  const isFocused = useIsFocused();
   const [refresh, SetRefresh] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const [array, SetArray] = useState<object[]>([]);
   const rotation = useRef(new Animated.Value(0)).current;
   const RefreshRotation = rotation.interpolate({
     inputRange: [0, 360],
     outputRange: ["0deg", "360deg"],
   });
 
-  const { data, refetch, isFetching, isError, isRefetchError } = useQuery(
-    ["Courses", page],
-    () => GetAllCourses(page, 6),
-    {
-      keepPreviousData: false,
-    }
-  );
-
-  const CourseItems = data as Item | undefined;
-
+  const { data, refetch, isFetching, isError, isLoading, isRefetchError } =
+    useQuery("Courses", GetAllCourses);
+  const [debouncedValue] = useDebounce(MyStore?.getSomeData(), 500);
+  const CourseItems = data as [ItemCourses] | undefined;
   useEffect(() => {
-    if (!isFetching) {
-      if (!isError) {
-        if (CourseItems?.courses) {
-          if (page === 1) {
-            SetArray([...CourseItems.courses]);
-          } else SetArray([...array, ...CourseItems.courses]);
-        }
-      }
-    }
-  }, [isFetching]);
-
+    MyStore?.setSomeData("");
+  }, [isFocused]);
   return (
     <View>
-      {array.length === 0 ? (
+      {isLoading || !CourseItems ? (
         [0, 1, 2, 3, 4].map((_, index) => <SkeletonCourseItem key={index} />)
       ) : (
         <View>
           <FlatList
             style={styles.holder}
-            data={array}
-            ListEmptyComponent={() => <CustomText>Error</CustomText>}
+            data={CourseItems.filter((c) => {
+              if (debouncedValue) {
+                return debouncedValue === ""
+                  ? c
+                  : c.title.toLowerCase().includes(debouncedValue);
+              } else {
+                return c;
+              }
+            })}
+            ListEmptyComponent={() => <CustomText>Empty</CustomText>}
             extraData={0}
             renderItem={({ item, index }) => (
               <CourseItem item={item} index={index} />
@@ -71,19 +69,9 @@ const Courses: FC<Props> = ({}) => {
             refreshing={refresh}
             onRefresh={() => {
               SetRefresh(true);
-              setPage(1);
               refetch().then(() => {
                 SetRefresh(false);
               });
-            }}
-            onEndReached={() => {
-              if (CourseItems) {
-                if (CourseItems.count - page * 6 > 0) {
-                  if (!isFetching) {
-                    setPage(page + 1);
-                  }
-                }
-              }
             }}
             contentContainerStyle={{ paddingBottom: 23 }}
             onEndReachedThreshold={0.1}
@@ -92,7 +80,7 @@ const Courses: FC<Props> = ({}) => {
             }}
             ListFooterComponent={
               <>
-                {isError ? (
+                {isRefetchError ? (
                   <Pressable
                     onPress={() => {
                       AnimLoop(rotation, 360, 1000, 0, false);
@@ -128,12 +116,10 @@ const Courses: FC<Props> = ({}) => {
                       </Animated.View>
                     </View>
                   </Pressable>
-                ) : array.length === CourseItems?.count ? (
+                ) : (
                   <CustomText myStyle={{ textAlign: "center" }}>
                     The End
                   </CustomText>
-                ) : (
-                  <ActivityIndicator color={"#3A84FF"} />
                 )}
               </>
             }
@@ -144,7 +130,7 @@ const Courses: FC<Props> = ({}) => {
   );
 };
 
-export default Courses;
+export default observer(Courses);
 
 const styles = StyleSheet.create({
   holder: {
