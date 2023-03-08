@@ -16,7 +16,7 @@ import { Anim } from "../../common/Animation";
 import Search from "./../../common/Search/Search";
 import Shop from "../../../assets/image/shop.svg";
 import Category from "../../../assets/image/category.svg";
-import Filter from "../../Modal/Filter";
+import Filter from "../../common/modal/Filter";
 
 type Props = {
   route: RouteProp<ParamListBase, string>;

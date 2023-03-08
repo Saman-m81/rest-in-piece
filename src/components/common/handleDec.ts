@@ -1,4 +1,7 @@
-export const HandleDescription = (str, num) => {
+export const HandleDescription = (str: string, num: number) => {
+  if (str.length <= num) {
+    return str;
+  }
   return (
     str && str.substring(0, str.substring(0, num).lastIndexOf(" ")) + " ..."
   );

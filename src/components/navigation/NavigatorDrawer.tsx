@@ -28,7 +28,11 @@ const NavigatorDrawer: FC = () => {
       }}
     >
       <Drawer.Screen name="drawer" component={NavigatorTab} />
-      <Drawer.Screen name="CourseDetail" component={CourseDetail} />
+      <Drawer.Screen
+        options={{ lazy: true, swipeEnabled: true, swipeEdgeWidth: 10 }}
+        name="CourseDetail"
+        component={CourseDetail}
+      />
     </Drawer.Navigator>
   );
 };

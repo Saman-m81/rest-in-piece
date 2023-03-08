@@ -1,26 +1,51 @@
 import {
+  StyleSheet,
+  Text,
+  View,
   TouchableOpacity,
   StyleProp,
+  TextStyle,
   ViewStyle,
   GestureResponderEvent,
-  TextStyle,
 } from "react-native";
 import React, { FC } from "react";
+import CustomText from "./CustomeText";
 import CustomeText from "./CustomeText";
 
 type Props = {
-  children: string;
-  style: StyleProp<ViewStyle>;
-  onPress?: ((event: GestureResponderEvent) => void) | undefined;
-  myStyle?: StyleProp<TextStyle>;
+  Vstyle?: StyleProp<ViewStyle> | null;
+  Tstyle?: StyleProp<TextStyle> | null;
+  Press?: ((event: GestureResponderEvent) => void) | undefined;
+  title?: string;
+  children?: JSX.Element;
 };
 
-const Btn: FC<Props> = ({ children, style, onPress, myStyle }) => {
+const Btn: FC<Props> = ({ Vstyle, Tstyle, Press, title, children }) => {
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <CustomeText myStyle={myStyle}>{children}</CustomeText>
+    <TouchableOpacity activeOpacity={0.5} onPress={Press}>
+      <View style={Vstyle ? Vstyle : styles.button}>
+        <CustomeText myStyle={Tstyle ? Tstyle : styles.text}>
+          {title}
+        </CustomeText>
+        {children}
+      </View>
     </TouchableOpacity>
   );
 };
 
 export default Btn;
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "white",
+    width: "42%",
+    height: 49,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 2,
+  },
+  text: {
+    fontSize: 18,
+  },
+});

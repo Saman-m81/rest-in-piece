@@ -8,19 +8,21 @@ import {
 import React, { FC } from "react";
 import SearchIcon from "../../../assets/image/search.svg";
 import MyInput from "../MyInput";
-import { observer, inject } from "mobx-react";
-import MyStore from "../../../store/Store";
+import { observer } from "mobx-react";
+import rootStore from "../../../store/Store";
 
 type Props = {};
 
 const Search: FC<Props> = ({}) => {
+  const filteringStore = rootStore.filteringStore[0];
+  const GetfilteringStore = rootStore.getFilteringData()[0];
   return (
     <KeyboardAvoidingView style={styles.holder}>
       <MyInput
         placeholder="جستجو ..."
         InputStyle={styles.input}
-        value={MyStore?.getSomeData()}
-        onChangeText={(text) => MyStore?.setSomeData(text)}
+        value={GetfilteringStore.somedata}
+        onChangeText={(text) => filteringStore.SetData(text)}
       />
       <View style={styles.icon}>
         <SearchIcon />
