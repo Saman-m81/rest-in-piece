@@ -21,6 +21,12 @@ import {
 import { Anim } from "../../common/Animation";
 import MyInput from "../../common/MyInput";
 import CustomeText from "./../../common/CustomeText";
+import { Formik } from "formik";
+import { LogInValidation } from "../../../utils/core/Validation/Validation";
+import Btn from "../../common/Btn";
+import Http from "../../../utils/core/Services/interceptor/interceptor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogInStudent } from "../../../utils/core/Services/api/LogInStudent";
 type Props = {};
 const LogIn: FC<Props> = ({}) => {
   const [animated, setAnimated] = useState<boolean>(true);
@@ -36,6 +42,10 @@ const LogIn: FC<Props> = ({}) => {
     inputRange: [40, 80],
     outputRange: ["40%", "80%"],
   });
+  const handleSubmit = (value: { email: string; password: string }) => {
+    LogInStudent(value);
+  };
+
   useEffect(() => {
     if (isFocused) {
       if (Log) {
@@ -53,46 +63,68 @@ const LogIn: FC<Props> = ({}) => {
   }, [isFocused]);
   return (
     <Animated.View style={{ ...styles.container, height: TopImageWidth }}>
-      <View>
-        <KeyboardAvoidingView style={styles.keyboards}>
-          <MyInput InputStyle={styles.input} placeholder="ایمیل" />
-          <Mail style={styles.svg} />
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.keyboards}>
-          <MyInput
-            placeholder="رمز عبور"
-            InputStyle={styles.input}
-            type={showHidePassword ? true : false}
-          />
-          <Lock style={styles.svg} />
-          {!showHidePassword ? (
-            <CloseEye
-              style={styles.eye}
-              fill="gray"
-              onPress={() => setShowHidePassword(!showHidePassword)}
-            />
-          ) : (
-            <Eye
-              style={styles.eye}
-              fill="gray"
-              onPress={() => setShowHidePassword(!showHidePassword)}
-            />
-          )}
-        </KeyboardAvoidingView>
-        <View>
-          <CustomeText
-            onPress={() => navigation.navigate("ResetPassword")}
-            myStyle={styles.forgetPass}
-          >
-            فراموشی رمز عبور؟
-          </CustomeText>
-        </View>
-      </View>
-      <View style={styles.keyboards}>
-        <TouchableOpacity style={styles.button}>
-          <CustomeText myStyle={styles.buttonText}>ورود</CustomeText>
-        </TouchableOpacity>
-      </View>
+      <Formik
+        onSubmit={(value) => handleSubmit(value)}
+        validationSchema={LogInValidation}
+        initialValues={{ email: "", password: "" }}
+      >
+        {({ errors, handleChange, handleSubmit, values }) => (
+          <View>
+            <View>
+              <KeyboardAvoidingView style={styles.keyboards}>
+                <MyInput
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  InputStyle={styles.input}
+                  placeholder="ایمیل"
+                  errors={errors.email}
+                />
+                <Mail style={styles.svg} />
+              </KeyboardAvoidingView>
+              <KeyboardAvoidingView style={styles.keyboards}>
+                <MyInput
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  errors={errors.password}
+                  placeholder="رمز عبور"
+                  InputStyle={styles.input}
+                  type={showHidePassword ? true : false}
+                />
+                <Lock style={styles.svg} />
+                {!showHidePassword ? (
+                  <CloseEye
+                    style={styles.eye}
+                    fill="gray"
+                    onPress={() => setShowHidePassword(!showHidePassword)}
+                  />
+                ) : (
+                  <Eye
+                    style={styles.eye}
+                    fill="gray"
+                    onPress={() => setShowHidePassword(!showHidePassword)}
+                  />
+                )}
+              </KeyboardAvoidingView>
+              <View>
+                <CustomeText
+                  onPress={() => navigation.navigate("ResetPassword")}
+                  myStyle={styles.forgetPass}
+                >
+                  فراموشی رمز عبور؟
+                </CustomeText>
+              </View>
+            </View>
+            <View style={styles.keyboards}>
+              <Btn
+                Press={() => handleSubmit()}
+                title="ورود"
+                Tstyle={styles.buttonText}
+                Vstyle={styles.button}
+              ></Btn>
+            </View>
+          </View>
+        )}
+      </Formik>
       <View style={styles.signup}>
         <CustomeText myStyle={styles.signq}>
           در حال حاضر اکانت فعال ندارید؟

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,33 +7,59 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import Calender from "../../../assets/image/calender.svg";
 import Birthday from "../../../assets/image/birthday.svg";
 import Mail from "../../../assets/image/mail.svg";
-import Second from "../../../assets/image/second.svg";
 import Lock from "../../../assets/image/lock.svg";
 import Eye from "../../../assets/image/eye.svg";
 import CustomeText from "../../common/CustomeText";
 import MyInput from "../../common/MyInput";
+import { Formik } from "formik";
+import { SignUpValidation } from "../../../utils/core/Validation/Validation";
+import ModalWrapper from "../../common/modal/ModalWrapper";
+import Datepicker from "../../common/Datepicker/Datepicker";
+import Btn from "../../common/Btn";
+import { getFormatedDate } from "react-native-modern-datepicker";
 
 const SignUpStep2: FC = () => {
+  const [visible, setVisible] = useState<boolean>(false);
+  const formikRef = useRef();
+  const [val, setVal] = useState<string>(
+    getFormatedDate(new Date(), "jYYYY/jMM/jDD")
+  );
+
+  useEffect(() => {
+    if (formikRef.current) {
+      formikRef.current.setFieldValue("age", val);
+    }
+    setVisible(false);
+  }, [val]);
+
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const nationalId = route.params?.nationalId;
+  const fullName = route.params?.fullName;
+  const phoneNumber = route.params?.phoneNumber;
 
   return (
     <View style={styles.container}>
       <View style={styles.stepper}>
         <View style={styles.stepper}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("SignUp1", { Sign: true })}
+          <Btn
+            Tstyle={{ display: "none" }}
+            Vstyle={{}}
+            Press={() => navigation.navigate("SignUp1", { Sign: true })}
           >
             <View style={{ ...styles.steperText, opacity: 0.5 }}>
               <CustomeText myStyle={{ fontSize: 16, color: "white" }}>
                 1
               </CustomeText>
             </View>
-          </TouchableOpacity>
+          </Btn>
+
           <View
             style={{ width: 130, height: 1, backgroundColor: "white" }}
           ></View>
@@ -44,30 +70,47 @@ const SignUpStep2: FC = () => {
           </View>
         </View>
       </View>
-      <View>
-        <KeyboardAvoidingView style={styles.keyboards}>
-          <MyInput InputStyle={styles.input} placeholder="تاریخ تولد" />
-          <Calender style={styles.svg} />
-          <Birthday style={styles.eye} />
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.keyboards}>
-          <MyInput InputStyle={styles.input} placeholder="ایمیل" />
-          <Mail style={styles.svg} />
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.keyboards}>
-          <MyInput InputStyle={styles.input} placeholder="رمز عبور" />
-          <Lock style={styles.svg} />
-          <Eye style={styles.eye} />
-        </KeyboardAvoidingView>
-      </View>
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
-          style={styles.button}
-        >
-          <CustomeText myStyle={styles.buttonText}>ثبت نام</CustomeText>
-        </TouchableOpacity>
-      </View>
+      <Formik
+        onSubmit={() => console.log("")}
+        initialValues={{ email: "", password: "", age: "" }}
+        validationSchema={SignUpValidation}
+      >
+        <>
+          <View>
+            <KeyboardAvoidingView style={styles.keyboards}>
+              <MyInput
+                showSoftInputOnFocus={false}
+                onPressIn={() => setVisible(true)}
+                InputStyle={styles.input}
+                placeholder="تاریخ تولد"
+                value={val}
+              />
+              <ModalWrapper visible={visible} setVisible={setVisible}>
+                <Datepicker val={val} setVal={setVal} />
+              </ModalWrapper>
+              <Calender style={styles.svg} />
+              <Birthday style={styles.eye} />
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView style={styles.keyboards}>
+              <MyInput InputStyle={styles.input} placeholder="ایمیل" />
+              <Mail style={styles.svg} />
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView style={styles.keyboards}>
+              <MyInput InputStyle={styles.input} placeholder="رمز عبور" />
+              <Lock style={styles.svg} />
+              <Eye style={styles.eye} />
+            </KeyboardAvoidingView>
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              style={styles.button}
+            >
+              <CustomeText myStyle={styles.buttonText}>ثبت نام</CustomeText>
+            </TouchableOpacity>
+          </View>
+        </>
+      </Formik>
       <View style={styles.login}>
         <CustomeText myStyle={styles.loginq}>
           در حال حاضر اکانت فعال دارید؟

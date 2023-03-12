@@ -20,6 +20,9 @@ import Phone from "../../../assets/image/phone.svg";
 import Id from "../../../assets/image/idNumber.svg";
 import CustomeText from "../../common/CustomeText";
 import MyInput from "../../common/MyInput";
+import { Formik, ErrorMessage } from "formik";
+import { SignUpValidation } from "../../../utils/core/Validation/Validation";
+import Btn from "../../common/Btn";
 interface Props {}
 const SignUpStep1: FC<Props> = () => {
   const [animated, setAnimated] = useState<boolean>(true);
@@ -65,8 +68,10 @@ const SignUpStep1: FC<Props> = () => {
         <View
           style={{ width: 130, height: 1, backgroundColor: "white" }}
         ></View>
-        <TouchableOpacity
-          onPress={() => {
+        <Btn
+          Tstyle={{ display: "none" }}
+          Vstyle={{}}
+          Press={() => {
             navigation.navigate("SignUp2");
             setAnimated(false);
           }}
@@ -76,36 +81,66 @@ const SignUpStep1: FC<Props> = () => {
               2
             </CustomeText>
           </View>
-        </TouchableOpacity>
+        </Btn>
       </View>
-      <View style={styles.keyboards}>
-        <KeyboardAvoidingView style={styles.inputWrapper}>
-          <MyInput
-            InputStyle={{ ...styles.input, marginTop: 0 }}
-            placeholder="نام کاربر"
-          />
-          <User style={styles.svg} />
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.inputWrapper}>
-          <MyInput InputStyle={styles.input} placeholder="شماره تماس" />
-          <Phone style={styles.svg} />
-        </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={styles.inputWrapper}>
-          <MyInput InputStyle={styles.input} placeholder="شماره ملی" />
-          <Id style={styles.svg} />
-        </KeyboardAvoidingView>
-      </View>
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("SignUp2");
-            setAnimated(false);
-          }}
-          style={styles.button}
-        >
-          <CustomeText myStyle={styles.buttonText}>گام بعدی</CustomeText>
-        </TouchableOpacity>
-      </View>
+      <Formik
+        onSubmit={() => console.log("")}
+        validationSchema={SignUpValidation}
+        initialValues={{ fullName: "", phoneNumber: "", nationalId: "" }}
+      >
+        {({ errors, handleChange, handleSubmit, values }) => (
+          <View>
+            <View style={styles.keyboards}>
+              <KeyboardAvoidingView style={styles.inputWrapper}>
+                <MyInput
+                  InputStyle={{ ...styles.input, marginTop: 0 }}
+                  placeholder="نام کاربر"
+                  errors={errors.fullName}
+                  value={values.fullName}
+                  onChangeText={handleChange("fullName")}
+                />
+                <User style={styles.svg} />
+              </KeyboardAvoidingView>
+              <KeyboardAvoidingView style={styles.inputWrapper}>
+                <MyInput
+                  errors={errors.phoneNumber}
+                  value={values.phoneNumber}
+                  onChangeText={handleChange("phoneNumber")}
+                  InputStyle={styles.input}
+                  placeholder="شماره تماس"
+                />
+                <Phone style={styles.svg} />
+              </KeyboardAvoidingView>
+              <KeyboardAvoidingView style={styles.inputWrapper}>
+                <MyInput
+                  errors={errors.nationalId}
+                  value={values.nationalId}
+                  onChangeText={handleChange("nationalId")}
+                  InputStyle={styles.input}
+                  placeholder="شماره ملی"
+                />
+                <Id style={styles.svg} />
+              </KeyboardAvoidingView>
+            </View>
+            <View>
+              <Btn
+                Vstyle={styles.button}
+                Tstyle={styles.buttonText}
+                title="گام بعدی"
+                Press={() => {
+                  navigation.navigate("SignUp2", {
+                    nationalId: values.nationalId,
+                    fullName: values.fullName,
+                    phoneNumber: values.phoneNumber,
+                  });
+
+                  setAnimated(false);
+                }}
+              />
+            </View>
+          </View>
+        )}
+      </Formik>
       <View style={styles.login}>
         <CustomeText myStyle={styles.loginq}>
           در حال حاضر اکانت فعال دارید؟

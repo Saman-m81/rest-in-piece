@@ -11,7 +11,6 @@ import Btn from "../../common/Btn";
 import { useNavigation } from "@react-navigation/native";
 import LaziImageLoader from "../../common/imageloader/LaziImageLoader";
 import CustomeText from "../../common/CustomeText";
-import Comments from "./Comments";
 type Props = {
   index: number;
   item: object;
@@ -31,9 +30,6 @@ interface items {
 }
 interface commentsDatas {
   postId: string;
-  username: string;
-  comment: string;
-  _id: string;
 }
 
 const CourseItem: FC<Props> = memo(

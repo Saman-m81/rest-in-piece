@@ -173,7 +173,7 @@ const ModalWrapper: FC<Props> = ({
       style={{
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: "8%",
+        paddingHorizontal: "6%",
         paddingVertical: "8.5%",
         margin: 0,
       }}
@@ -189,7 +189,6 @@ const ModalWrapper: FC<Props> = ({
                 borderRadius: 30,
                 backgroundColor: "white",
                 width: "100%",
-                // height: "100%",
                 paddingHorizontal: "10%",
                 paddingVertical: "5.5%",
               }

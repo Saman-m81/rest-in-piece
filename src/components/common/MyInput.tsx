@@ -1,5 +1,13 @@
-import { StyleProp, TextInput, TextStyle } from "react-native";
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInput,
+  TextInputFocusEventData,
+  TextStyle,
+  NativeTouchEvent,
+} from "react-native";
 import React, { FC } from "react";
+import CustomeText from "./CustomeText";
 
 interface Props {
   type?: boolean;
@@ -7,6 +15,11 @@ interface Props {
   placeholder?: string;
   value?: string;
   onChangeText?: ((text: string) => void) | undefined;
+  errors?: string;
+  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  showSoftInputOnFocus?: boolean;
+  onPressIn?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
 }
 
 const MyInput: FC<Props> = ({
@@ -15,16 +28,30 @@ const MyInput: FC<Props> = ({
   placeholder,
   value,
   onChangeText,
+  errors,
+  onFocus,
+  showSoftInputOnFocus,
+  onBlur,
+  onPressIn,
 }) => {
   return (
     <>
       <TextInput
+        showSoftInputOnFocus={showSoftInputOnFocus}
         placeholder={placeholder}
         style={InputStyle}
         secureTextEntry={type}
         value={value}
         onChangeText={onChangeText}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onPressIn={onPressIn}
       />
+      {errors && (
+        <CustomeText myStyle={{ color: "fff" }}>
+          {"*" + errors + "*"}
+        </CustomeText>
+      )}
     </>
   );
 };
