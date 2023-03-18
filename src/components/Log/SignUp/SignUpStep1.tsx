@@ -133,7 +133,7 @@ const SignUpStep1: FC<Props> = () => {
                     fullName: values.fullName,
                     phoneNumber: values.phoneNumber,
                   });
-
+                  handleSubmit();
                   setAnimated(false);
                 }}
               />

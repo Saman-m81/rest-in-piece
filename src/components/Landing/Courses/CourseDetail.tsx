@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import CustomeText from "../../common/CustomeText";
 import Plus from "../../../assets/image/plus.svg";
 import Btn from "../../common/Btn";
@@ -17,6 +17,8 @@ import DrawerIcon from "../../../assets/image/dialpad.svg";
 import Heart from "../../../assets/image/heart.svg";
 import Heartfat from "../../../assets/image/redHeart.svg";
 import Comments from "./Comments";
+import ModalWrapper from "./../../common/modal/ModalWrapper";
+import CommentModal from "../../common/modal/CommentModal";
 
 type Props = {};
 interface courseComment extends Array<comment> {}
@@ -40,8 +42,10 @@ interface comment {
   username: string;
   comment: string;
   _id: string;
+  answer: string;
 }
 const CourseDetail: FC<Props> = ({}) => {
+  const [visible, setVisible] = useState<boolean>(false);
   const { height, width } = useWindowDimensions();
   const navbarHeight = (31 * height) / 100;
   const route = useRoute();
@@ -65,6 +69,7 @@ const CourseDetail: FC<Props> = ({}) => {
   const navigation = useNavigation();
   return (
     <>
+      <CommentModal setVisible={setVisible} visible={visible} />
       <View>
         <View
           style={{
@@ -283,11 +288,14 @@ const CourseDetail: FC<Props> = ({}) => {
                   height: 30,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
+                <Btn
+                  Press={() => setVisible(true)}
+                  Vstyle={{
+                    flexDirection: "row-reverse",
                     alignItems: "center",
                   }}
+                  Tstyle={{ fontSize: 13, color: "#009EDA", marginLeft: 5 }}
+                  title="نظر جدید"
                 >
                   <View
                     style={{
@@ -301,16 +309,7 @@ const CourseDetail: FC<Props> = ({}) => {
                   >
                     <Plus />
                   </View>
-                  <CustomeText
-                    myStyle={{
-                      fontSize: 13,
-                      color: "#009EDA",
-                      marginLeft: 5,
-                    }}
-                  >
-                    نظر جدید
-                  </CustomeText>
-                </View>
+                </Btn>
                 <CustomeText myStyle={{ fontSize: 15, color: "#3D5FA2" }}>
                   نظرات کاربران:
                 </CustomeText>
@@ -321,7 +320,7 @@ const CourseDetail: FC<Props> = ({}) => {
                   <Comments
                     key={comments._id}
                     comment={comments.comment}
-                    postId={comments.postId}
+                    answer={comments.answer}
                     username={comments.username}
                   />
                 ))

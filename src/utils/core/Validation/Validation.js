@@ -19,12 +19,11 @@ const passwordValidation = Yup.string()
 //     "نام کاربری باید انگلیسی باشد"
 //   );
 
-const phoneValidation = Yup.string()
-  .required("لطفا فیلد را پر کنید")
-  .matches(
-    /^09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}$/,
-    "شماره باید 11 رقم باشد و با 09 شروع شود"
-  );
+const phoneValidation = Yup.string().required("لطفا فیلد را پر کنید");
+//   .matches(
+//   /^09(1[0-9]|3[0-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}$/,
+//   "شماره باید 11 رقم باشد و با 09 شروع شود"
+// );
 
 const IdnumValidation = Yup.string()
   .required("لطفا فیلد را پر کنید")
@@ -39,7 +38,7 @@ const nameValidation = Yup.string()
     "نام باید فارسی باشد"
   );
 
-//const birthdayValidation = Yup.string().required();
+const age = Yup.string().required();
 
 export const ForgetPasswordValidation = Yup.object({ email: emailValidation });
 
@@ -54,6 +53,7 @@ export const SignUpValidation = Yup.object({
   password: passwordValidation,
   phoneNumber: phoneValidation,
   nationalId: IdnumValidation,
+  // age: age,
 });
 
 export const ResetPasswordValidation = Yup.object({

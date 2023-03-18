@@ -11,7 +11,7 @@ import * as animatable from "react-native-animatable";
 
 type Props = {
   visible: boolean;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   children: JSX.Element;
   style?: StyleProp<ViewStyle>;
   animIn?:
@@ -177,7 +177,9 @@ const ModalWrapper: FC<Props> = ({
         paddingVertical: "8.5%",
         margin: 0,
       }}
-      onBackdropPress={() => setVisible(false)}
+      onBackdropPress={() => {
+        setVisible && setVisible(false);
+      }}
       backdropColor="rgba(0,57,152,.55)"
       isVisible={visible}
     >

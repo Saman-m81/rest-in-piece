@@ -1,23 +1,18 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { FC } from "react";
-import { View } from "react-native";
-import CourseDetail from "../Landing/Courses/CourseDetail";
+import CourseDetail from "../components/Landing/Courses/CourseDetail";
 import NavigatorTab from "./NavigatorTab";
-
+import MyDrawer from "./../components/Panel/MyDrawer";
 const NavigatorDrawer: FC = () => {
   const Drawer = createDrawerNavigator();
 
   return (
     <Drawer.Navigator
-      drawerContent={() => (
-        <View
-          style={{ width: "100%", height: "100%", backgroundColor: "red" }}
-        ></View>
-      )}
+      drawerContent={MyDrawer}
       screenOptions={{
         overlayColor: "rgba(0,57,152,0.5)",
         drawerStyle: {
-          width: "56%",
+          width: "60%",
           borderBottomLeftRadius: 35,
           borderTopLeftRadius: 35,
           overflow: "hidden",
@@ -29,7 +24,7 @@ const NavigatorDrawer: FC = () => {
     >
       <Drawer.Screen name="drawer" component={NavigatorTab} />
       <Drawer.Screen
-        options={{ lazy: true, swipeEnabled: true, swipeEdgeWidth: 10 }}
+        options={{ lazy: true, swipeEnabled: true, swipeEdgeWidth: 100 }}
         name="CourseDetail"
         component={CourseDetail}
       />

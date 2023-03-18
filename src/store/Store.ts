@@ -16,14 +16,19 @@
 
 import { types } from "mobx-state-tree";
 import { FilteringStore } from "./FiltereingStore";
+import { Registreration } from "./Registeration";
 
 const RootStore = types
   .model({
     filteringStore: types.array(FilteringStore),
+    registeration: types.array(Registreration),
   })
   .views((self) => ({
     getFilteringData() {
       return self.filteringStore;
+    },
+    getRegisterationData() {
+      return self.registeration;
     },
   }));
 
@@ -46,6 +51,11 @@ const rootStore = RootStore.create({
         capacity: [0, 0],
       },
       isOn: false,
+    },
+  ],
+  registeration: [
+    {
+      Active: false,
     },
   ],
 });

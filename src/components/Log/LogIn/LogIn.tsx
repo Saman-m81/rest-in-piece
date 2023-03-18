@@ -1,11 +1,10 @@
-import React, { FC, useRef, useEffect, useState } from "react";
+import React, { FC, useRef, useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  TextInput,
-  TouchableOpacity,
+  ActivityIndicator,
   Image,
   Animated,
 } from "react-native";
@@ -27,10 +26,12 @@ import Btn from "../../common/Btn";
 import Http from "../../../utils/core/Services/interceptor/interceptor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LogInStudent } from "../../../utils/core/Services/api/LogInStudent";
+import ModalWrapper from "../../common/modal/ModalWrapper";
 type Props = {};
 const LogIn: FC<Props> = ({}) => {
   const [animated, setAnimated] = useState<boolean>(true);
   const [showHidePassword, setShowHidePassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -42,8 +43,9 @@ const LogIn: FC<Props> = ({}) => {
     inputRange: [40, 80],
     outputRange: ["40%", "80%"],
   });
+
   const handleSubmit = (value: { email: string; password: string }) => {
-    LogInStudent(value);
+    LogInStudent({ value, setLoading });
   };
 
   useEffect(() => {
@@ -62,100 +64,120 @@ const LogIn: FC<Props> = ({}) => {
     }
   }, [isFocused]);
   return (
-    <Animated.View style={{ ...styles.container, height: TopImageWidth }}>
-      <Formik
-        onSubmit={(value) => handleSubmit(value)}
-        validationSchema={LogInValidation}
-        initialValues={{ email: "", password: "" }}
-      >
-        {({ errors, handleChange, handleSubmit, values }) => (
-          <View>
+    <>
+      {loading ? (
+        <ModalWrapper animIn="fadeIn" animOut="fadeOut" visible={loading}>
+          <View style={{ height: 100 }}>
+            <ActivityIndicator size={50} color={"blue"} />
+            <CustomeText
+              myStyle={{
+                fontSize: 12,
+                color: "#222",
+                textAlign: "center",
+                alignSelf: "center",
+              }}
+            >
+              لطفا صبر کنید
+            </CustomeText>
+          </View>
+        </ModalWrapper>
+      ) : null}
+
+      <Animated.View style={{ ...styles.container, height: TopImageWidth }}>
+        <Formik
+          onSubmit={handleSubmit}
+          validationSchema={LogInValidation}
+          initialValues={{ email: "", password: "" }}
+        >
+          {({ errors, handleChange, handleSubmit, values }) => (
             <View>
-              <KeyboardAvoidingView style={styles.keyboards}>
-                <MyInput
-                  value={values.email}
-                  onChangeText={handleChange("email")}
-                  InputStyle={styles.input}
-                  placeholder="ایمیل"
-                  errors={errors.email}
-                />
-                <Mail style={styles.svg} />
-              </KeyboardAvoidingView>
-              <KeyboardAvoidingView style={styles.keyboards}>
-                <MyInput
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  errors={errors.password}
-                  placeholder="رمز عبور"
-                  InputStyle={styles.input}
-                  type={showHidePassword ? true : false}
-                />
-                <Lock style={styles.svg} />
-                {!showHidePassword ? (
-                  <CloseEye
-                    style={styles.eye}
-                    fill="gray"
-                    onPress={() => setShowHidePassword(!showHidePassword)}
-                  />
-                ) : (
-                  <Eye
-                    style={styles.eye}
-                    fill="gray"
-                    onPress={() => setShowHidePassword(!showHidePassword)}
-                  />
-                )}
-              </KeyboardAvoidingView>
               <View>
-                <CustomeText
-                  onPress={() => navigation.navigate("ResetPassword")}
-                  myStyle={styles.forgetPass}
-                >
-                  فراموشی رمز عبور؟
-                </CustomeText>
+                <KeyboardAvoidingView style={styles.keyboards}>
+                  <MyInput
+                    value={values.email}
+                    onChangeText={handleChange("email")}
+                    InputStyle={styles.input}
+                    placeholder="ایمیل"
+                    errors={errors.email}
+                  />
+                  <Mail style={styles.svg} />
+                </KeyboardAvoidingView>
+                <KeyboardAvoidingView style={styles.keyboards}>
+                  <MyInput
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    errors={errors.password}
+                    placeholder="رمز عبور"
+                    InputStyle={styles.input}
+                    type={showHidePassword ? true : false}
+                  />
+                  <Lock style={styles.svg} />
+                  {!showHidePassword ? (
+                    <CloseEye
+                      style={styles.eye}
+                      fill="gray"
+                      onPress={() => setShowHidePassword(!showHidePassword)}
+                    />
+                  ) : (
+                    <Eye
+                      style={styles.eye}
+                      fill="gray"
+                      onPress={() => setShowHidePassword(!showHidePassword)}
+                    />
+                  )}
+                </KeyboardAvoidingView>
+                <View>
+                  <CustomeText
+                    onPress={() => navigation.navigate("ResetPassword")}
+                    myStyle={styles.forgetPass}
+                  >
+                    فراموشی رمز عبور؟
+                  </CustomeText>
+                </View>
+              </View>
+              <View style={styles.keyboards}>
+                <Btn
+                  Press={() => handleSubmit()}
+                  title="ورود"
+                  Tstyle={styles.buttonText}
+                  Vstyle={styles.button}
+                ></Btn>
               </View>
             </View>
-            <View style={styles.keyboards}>
-              <Btn
-                Press={() => handleSubmit()}
-                title="ورود"
-                Tstyle={styles.buttonText}
-                Vstyle={styles.button}
-              ></Btn>
-            </View>
+          )}
+        </Formik>
+        <View style={styles.signup}>
+          <CustomeText myStyle={styles.signq}>
+            در حال حاضر اکانت فعال ندارید؟
+          </CustomeText>
+          <CustomeText
+            myStyle={styles.signa}
+            onPress={() => {
+              navigation.navigate("SignUp1", { Sign: true });
+              setAnimated(false);
+            }}
+          >
+            ثبت نام
+          </CustomeText>
+        </View>
+        <View style={styles.wrapper}>
+          <View style={styles.line}></View>
+          <CustomeText myStyle={styles.communication}>ورود از طریق</CustomeText>
+          <View style={styles.line}></View>
+        </View>
+        <View style={styles.flex}>
+          <View style={styles.img}>
+            <Image source={require("../../../assets/image/google.png")} />
           </View>
-        )}
-      </Formik>
-      <View style={styles.signup}>
-        <CustomeText myStyle={styles.signq}>
-          در حال حاضر اکانت فعال ندارید؟
-        </CustomeText>
-        <CustomeText
-          myStyle={styles.signa}
-          onPress={() => {
-            navigation.navigate("SignUp1", { Sign: true });
-            setAnimated(false);
-          }}
-        >
-          ثبت نام
-        </CustomeText>
-      </View>
-      <View style={styles.wrapper}>
-        <View style={styles.line}></View>
-        <CustomeText myStyle={styles.communication}>ورود از طریق</CustomeText>
-        <View style={styles.line}></View>
-      </View>
-      <View style={styles.flex}>
-        <View style={styles.img}>
-          <Image source={require("../../../assets/image/google.png")} />
+          <View style={styles.img}>
+            <Image source={require("../../../assets/image/twitter.png")} />
+          </View>
+          <View style={styles.img}>
+            <Image source={require("../../../assets/image/facebook.png")} />
+          </View>
         </View>
-        <View style={styles.img}>
-          <Image source={require("../../../assets/image/twitter.png")} />
-        </View>
-        <View style={styles.img}>
-          <Image source={require("../../../assets/image/facebook.png")} />
-        </View>
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </>
   );
 };
 

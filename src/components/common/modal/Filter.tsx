@@ -1,13 +1,4 @@
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-  Button,
-  TouchableOpacity,
-  Animated,
-} from "react-native";
+import { View, Animated } from "react-native";
 import React, { FC, useState, useRef, useEffect } from "react";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import ModalWrapper from "./ModalWrapper";
@@ -287,5 +278,3 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
 };
 
 export default observer(Filter);
-
-const styles = StyleSheet.create({});

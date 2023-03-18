@@ -42,6 +42,7 @@
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^13.8.0",
     "react-native-svg-transformer": "^1.0.0",
+    "react-native-toast-message": "^2.1.6",
     "react-query": "^3.39.3",
     "use-debounce": "^9.0.3",
     "yup": "^1.0.0"

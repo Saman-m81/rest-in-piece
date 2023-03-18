@@ -14,12 +14,21 @@ interface Props {
   InputStyle?: StyleProp<TextStyle>;
   placeholder?: string;
   value?: string;
+  multiline?: boolean;
   onChangeText?: ((text: string) => void) | undefined;
   errors?: string;
   onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   showSoftInputOnFocus?: boolean;
   onPressIn?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  maxLength?: number;
+  keyboardType?:
+    | "default"
+    | "email-address"
+    | "numeric"
+    | "phone-pad"
+    | "number-pad"
+    | "decimal-pad";
 }
 
 const MyInput: FC<Props> = ({
@@ -33,6 +42,9 @@ const MyInput: FC<Props> = ({
   showSoftInputOnFocus,
   onBlur,
   onPressIn,
+  multiline,
+  keyboardType,
+  maxLength,
 }) => {
   return (
     <>
@@ -46,6 +58,9 @@ const MyInput: FC<Props> = ({
         onFocus={onFocus}
         onBlur={onBlur}
         onPressIn={onPressIn}
+        multiline={multiline}
+        maxLength={maxLength}
+        keyboardType={keyboardType}
       />
       {errors && (
         <CustomeText myStyle={{ color: "fff" }}>

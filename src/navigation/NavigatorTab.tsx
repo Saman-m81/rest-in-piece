@@ -1,21 +1,43 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FC, useRef, useState } from "react";
-import { Animated, useWindowDimensions, View } from "react-native";
-import Dialpad from "../../assets/image/dialpad.svg";
-import { Anim } from "../common/Animation";
-import Cart from "../Landing/Cart/Cart";
-import Courses from "../Landing/Courses/Courses";
-import Navbar from "../Landing/Courses/Navbar";
-import Fave from "../Landing/Fave/Fave";
-import CartSvg from "../../assets/image/cart.svg";
-import Heart from "../../assets/image/heart.svg";
-import File from "../../assets/image/file.svg";
+import { FC, useRef, useState, useEffect } from "react";
+import { Animated, useWindowDimensions, View, BackHandler } from "react-native";
+import Dialpad from "../assets/image/dialpad.svg";
+import { Anim } from "../components/common/Animation";
+import Cart from "../components/Landing/Cart/Cart";
+import Courses from "../components/Landing/Courses/Courses";
+import Navbar from "../components/Landing/Courses/Navbar";
+import Fave from "../components/Landing/Fave/Fave";
+import CartSvg from "../assets/image/cart.svg";
+import Heart from "../assets/image/heart.svg";
+import File from "../assets/image/file.svg";
+import Toast from "react-native-toast-message";
+import { useIsFocused } from "@react-navigation/native";
 
 const NavigatorTab: FC = ({ navigation }) => {
   const Tab = createBottomTabNavigator();
-
-  const [click, setClick] = useState<boolean>(true);
+  const isFocused = useIsFocused();
   const { height, width } = useWindowDimensions();
+  const [click, setClick] = useState<boolean>(true);
+  const [backPressed, setBackPressed] = useState<number>(0);
+  useEffect(() => {
+    if (isFocused) {
+      const backAction = () => {
+        if (backPressed + 2000 >= Date.now()) {
+          BackHandler.exitApp();
+        }
+        setBackPressed(Date.now());
+        Toast.show({ text1: "برای خروج دوبار برگردید", type: "info" });
+        return true;
+      };
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+
+      return () => backHandler.remove();
+    }
+  }, [isFocused, backPressed]);
+
   const navHeight = (6 * height) / 100;
   const courseNavHeight = (15 * height) / 100;
 
