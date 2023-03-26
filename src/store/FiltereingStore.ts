@@ -9,8 +9,6 @@ export const FilteringStore = types
     Sort: types.string,
     Cost: types.array(types.number),
     Capacity: types.array(types.number),
-    maxCapacity: types.number,
-    max: types.number,
     SubmitFilter: types.model({
       sort: types.string,
       sortdir: types.string,
@@ -42,12 +40,6 @@ export const FilteringStore = types
     SetCapacity(data: number[]) {
       self.Capacity.replace(data);
     },
-    setMax(data: number) {
-      self.max = data;
-    },
-    setMaxCapacity(data: number) {
-      self.maxCapacity = data;
-    },
     SetSubmit() {
       self.SubmitFilter.sort = self.Sort;
       self.SubmitFilter.searchOp = self.SearchOption;
@@ -60,8 +52,8 @@ export const FilteringStore = types
       self.SortDirection = "asc";
       self.SearchOption = "Course";
       self.Sort = "";
-      self.Cost.replace([0, self.max]);
-      self.Capacity.replace([0, self.maxCapacity]);
+      self.Cost.replace([0, 500000]);
+      self.Capacity.replace([0, 500]);
     },
   }));
 

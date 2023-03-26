@@ -15,49 +15,79 @@
 // }
 
 import { types } from "mobx-state-tree";
+import { BasketStore } from "./BaketStore";
 import { FilteringStore } from "./FiltereingStore";
-import { Registreration } from "./Registeration";
+import { Registration } from "./Registration";
+import { SettingStore } from "./SettingStore";
 
 const RootStore = types
   .model({
-    filteringStore: types.array(FilteringStore),
-    registeration: types.array(Registreration),
+    filteringStore: FilteringStore,
+    registration: Registration,
+    basket: BasketStore,
+    setting: SettingStore,
   })
   .views((self) => ({
     getFilteringData() {
       return self.filteringStore;
     },
     getRegisterationData() {
-      return self.registeration;
+      return self.registration;
+    },
+    getBasketData() {
+      return self.basket;
+    },
+    getSettingData() {
+      return self.setting;
     },
   }));
 
 const rootStore = RootStore.create({
-  filteringStore: [
-    {
-      somedata: "",
-      SortDirection: "asc",
-      SearchOption: "Course",
-      Sort: "",
-      max: 0,
-      maxCapacity: 0,
-      Cost: [0, 0],
-      Capacity: [0, 0],
-      SubmitFilter: {
-        sort: "",
-        sortdir: "",
-        searchOp: "Course",
-        cost: [0, 0],
-        capacity: [0, 0],
-      },
-      isOn: false,
+  filteringStore: {
+    somedata: "",
+    SortDirection: "asc",
+    SearchOption: "Course",
+    Sort: "",
+    Cost: [0, 500000],
+    Capacity: [0, 500],
+    SubmitFilter: {
+      sort: "",
+      sortdir: "",
+      searchOp: "Course",
+      cost: [0, 500000],
+      capacity: [0, 500],
     },
-  ],
-  registeration: [
-    {
-      Active: false,
+    isOn: false,
+  },
+  registration: {
+    Active: false,
+    user: {
+      _id: "",
+      birthDate: "",
+      email: "",
+      fullName: "",
+      isActive: false,
+      nationalId: "",
+      phoneNumber: "",
+      profile: "",
+      registerDate: "",
+      role: "",
     },
-  ],
+    token: "",
+  },
+  basket: {
+    key: "",
+    ShopingList: [],
+    FaveList: [],
+  },
+  setting: {
+    Darkmode: false,
+    Lock: {
+      lock: false,
+      shouldNavigate: false,
+      password: "",
+    },
+  },
 });
 
 export default rootStore;

@@ -1,65 +1,138 @@
-import { QueryClient, QueryClientProvider } from "react-query";
-import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Navigator } from "../navigation/Navigator";
-import SplashScreen from "../components/SplashScreen/SplashScreen";
+import { StyleSheet, Text, StatusBar } from "react-native";
+import React, { FC, useState, useEffect, useCallback } from "react";
+import Splash from "../component/content/SplashScreen/Splash";
+import { QueryClientProvider, QueryClient } from "react-query";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "./../components/common/ToastLayout/ToastLayout";
+import { toastConfig } from "../component/common/Toast/ToastLayout";
+import Navigator from "./Navigator/Navigator";
+import { observer } from "mobx-react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import rootStore from "../store/Store";
 
+type Props = {};
+type UserItem = {
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  birthDate: string;
+  role: string;
+  isActive: boolean;
+  nationalId: string;
+  registerDate: string;
+  profile: string;
+};
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { retry: false, refetchOnWindowFocus: false },
-    mutations: { retry: false },
+    queries: {
+      retry: false,
+      // cacheTime: 5000,
+      // staleTime: 5000 * 60,
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: false,
+    },
   },
 });
-
-const App: FC = () => {
-  const [show, setShow] = useState<boolean>(true);
-  const [Token, SetToken] = useState<boolean | null>(true);
-  const RegisterStore = rootStore.registeration[0];
-  const initialLog = async () => {
-    // AsyncStorage.clear();
-    const token = await AsyncStorage.getItem("token");
-    if (token) {
-      RegisterStore.SetActive();
-      SetToken(true);
-    } else {
-      RegisterStore.SetDeActive();
-      SetToken(false);
-    }
+type Dataitems = {
+  title: string;
+  teacher: {
+    fullName: string;
+    profile: string;
   };
+  cost: number;
+  lesson: {
+    image: string;
+    description: string;
+  };
+  startDate: string;
+  endDate: string;
+  students:
+    | Array<{
+        _id: string;
+        fullName: string;
+        email: string;
+        profile: string;
+      }>
+    | [];
+  capacity: number;
+  _id: string;
+};
+const App: FC<Props> = observer(({}): JSX.Element => {
+  const [show, SetShow] = useState<boolean>(true);
+  const [Token, SetToken] = useState<boolean>(false);
+  const RegisterStore = rootStore.registration;
+  const BasketStore = rootStore.basket;
+  const SettingStore = rootStore.setting;
+  const GetRegisterStore = rootStore.getRegisterationData();
+
+  const initialLog = async () => {
+    const token = await AsyncStorage.getItem("token");
+    const user = await AsyncStorage.getItem("user");
+    if (!token || !user) {
+      BasketStore.SetAllShop([]);
+      BasketStore.SetAllFavorite([]);
+      RegisterStore.SetDeActive();
+      SetToken(true);
+      return;
+    }
+    const { _id } = JSON.parse(user) as UserItem;
+    const itF = await AsyncStorage.getItem(_id);
+    const { Fave = [], Basket = [] } = itF ? JSON.parse(itF) : {};
+    const password = await AsyncStorage.getItem("password");
+    if (password) {
+      const ConvertedPassword = JSON.parse(password) as {
+        password: string;
+        lock: boolean;
+      };
+      SettingStore.SetPassword(ConvertedPassword.password);
+      SettingStore.SetLock(ConvertedPassword.lock);
+      ConvertedPassword.lock === false && SettingStore.SetNavigate(true);
+    } else {
+      SettingStore.SetPassword("");
+      SettingStore.SetLock(false);
+      SettingStore.SetNavigate(true);
+    }
+
+    BasketStore.SetAllShop(Basket);
+    BasketStore.SetAllFavorite(Fave);
+    RegisterStore.SetActive(JSON.parse(user), token);
+    BasketStore.SetUserId(_id);
+    SetToken(true);
+  };
+
   useEffect(() => {
     initialLog();
-  }, []);
+  }, [GetRegisterStore.Active]);
   useEffect(() => {
     setTimeout(() => {
-      if (Token !== null) {
-        setShow(false);
+      if (Token) {
+        SetShow(false);
       }
-    }, 1500);
-  }, []);
+    }, 2500);
+  }, [Token]);
+
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <SplashScreen open={show} />
-        {!show && (
-          <View style={styles.container}>
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle={"dark-content"}
+      />
+      <Splash Show={show} />
+      {!show && (
+        <>
+          <QueryClientProvider client={queryClient}>
             <Navigator />
-          </View>
-        )}
-      </QueryClientProvider>
-      <Toast config={toastConfig} visibilityTime={2000} />
+          </QueryClientProvider>
+          <Toast config={toastConfig} visibilityTime={2000} />
+        </>
+      )}
     </>
   );
-};
+});
 
 export default App;
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    width: "100%",
-    height: "100%",
-  },
-});
+
+const styles = StyleSheet.create({});
