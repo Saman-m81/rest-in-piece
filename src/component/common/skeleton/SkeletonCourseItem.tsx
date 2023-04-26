@@ -1,10 +1,18 @@
 import { Text, View } from "react-native";
 import React, { FC } from "react";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 type Props = {};
 
 const SkeletonCourseItem: FC<Props> = ({}): any => {
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <View
       style={{
@@ -20,7 +28,7 @@ const SkeletonCourseItem: FC<Props> = ({}): any => {
           style={{
             width: "90%",
             height: "100%",
-            backgroundColor: "white",
+            backgroundColor: theme.CourseItem,
             borderRadius: 20,
             marginBottom: 19,
             paddingRight: 38,

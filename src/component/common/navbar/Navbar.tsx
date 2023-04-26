@@ -10,6 +10,8 @@ import {
 } from "@react-navigation/native";
 import { Anim } from "../Animation/Animation";
 import CoursesNavbar from "./CoursesNavbarItem";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 type Props = {
   route: RouteProp<ParamListBase, string>;
@@ -43,6 +45,12 @@ const Navbar: FC<Props> = ({
       }
     }
   }, [click]);
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
 
   return (
     <Animated.View
@@ -50,6 +58,7 @@ const Navbar: FC<Props> = ({
         ...styles.nav,
         height: route.name === "Course" ? HeightGrow : HeightDecrese,
         paddingTop: route.name === "Course" ? PaddingGrow : PaddingDecrese,
+        backgroundColor: theme.lightBackground,
       }}
     >
       <CoursesNavbar />
@@ -61,7 +70,6 @@ export default Navbar;
 
 const styles = StyleSheet.create({
   nav: {
-    backgroundColor: "#4F91FF",
     width: "100%",
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,

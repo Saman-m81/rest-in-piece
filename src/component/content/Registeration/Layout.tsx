@@ -10,6 +10,10 @@ import {
   Animated,
 } from "react-native";
 import React, { FC } from "react";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import Polygon1 from "../../../assets/images/PolygonS.svg";
+import rootStore from "../../../store/Store";
+import { observer } from "mobx-react";
 
 type Props = {
   Tchildren: JSX.Element;
@@ -34,6 +38,12 @@ const Layout: FC<Props> = ({
   TopImageRotate,
   BottomImageB = "9%",
 }) => {
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <View
       style={{
@@ -41,10 +51,10 @@ const Layout: FC<Props> = ({
         justifyContent: "space-between",
         position: "relative",
         elevation: Platform.OS === "android" ? 1 : 0,
+        backgroundColor: theme.backMode1,
       }}
     >
-      <Animated.Image
-        source={require("../../../assets/images/Polygon1.png")}
+      <Animated.View
         style={{
           ...styles.topImage,
           width: TopImageWidth,
@@ -52,17 +62,18 @@ const Layout: FC<Props> = ({
           bottom: TopImageB,
           transform: [{ rotate: TopImageRotate }],
         }}
-        alt="polygen"
-      />
-      <Animated.Image
-        source={require("../../../assets/images/Polygon1.png")}
+      >
+        <Polygon1 fill={theme.polygen} width={"100%"} />
+      </Animated.View>
+      <Animated.View
         style={{
           ...styles.bottomImage,
           width: TopImageWidth,
           bottom: BottomImageB,
         }}
-        alt="polygen"
-      />
+      >
+        <Polygon1 fill={theme.polygen} width={"100%"} />
+      </Animated.View>
 
       <SafeAreaView style={{ flex: 1 }}>
         <Animated.View
@@ -80,6 +91,7 @@ const Layout: FC<Props> = ({
             ...styles.holder,
             ...styles.bottom,
             flex: Positive,
+            backgroundColor: theme.darkBackground,
           }}
         >
           {Bchildren}
@@ -89,14 +101,13 @@ const Layout: FC<Props> = ({
   );
 };
 
-export default Layout;
+export default observer(Layout);
 
 const styles = StyleSheet.create({
   holder: {
     paddingHorizontal: "8%",
   },
   bottom: {
-    backgroundColor: "#3A84FF",
     paddingBottom: "7%",
     paddingTop: 35,
     borderTopStartRadius: 35,

@@ -42,9 +42,9 @@ const ForgetPass: FC<Props> = ({}) => {
     inputRange: [30, 34],
     outputRange: ["30deg", "34deg"],
   });
-  const BottomImageBottom = TopImageRo.interpolate({
-    inputRange: [9, 41],
-    outputRange: ["9%", "41%"],
+  const BottomImageBottom = BottomImageB.interpolate({
+    inputRange: [9, 30],
+    outputRange: ["9%", "30%"],
   });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const ForgetPass: FC<Props> = ({}) => {
       Anim(TopImageR, 41, 0);
       Anim(TopImageB, 80, 0);
       Anim(TopImageRo, 30, 0);
-      Anim(BottomImageB, 41, 800);
+      Anim(BottomImageB, 30, 800);
     }
   }, [navigation.isFocused]);
 

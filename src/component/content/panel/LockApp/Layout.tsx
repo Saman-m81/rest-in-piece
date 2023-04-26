@@ -2,7 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { FC } from "react";
 import CustomText from "../../../common/Text/CustomText";
 import Lock from "../../../../assets/images/svg/gholf.svg";
-
+import useTheme from "../../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../../store/Store";
+import { observer } from "mobx-react";
+import { Theme } from "../../../../Types/Types";
 type Props = {
   title: string;
   children: JSX.Element;
@@ -10,11 +13,16 @@ type Props = {
 };
 
 const Layout: FC<Props> = ({ title, children, Buttun }) => {
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as Theme;
+  const theme = useTheme(mythem);
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, backgroundColor: theme.backModeLock }}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Lock style={styles.lockIcon} width={100} height={100} />
-        <CustomText style={styles.message}>{title}</CustomText>
+        <CustomText style={{ ...styles.message, color: theme.textColor }}>
+          {title}
+        </CustomText>
         <View style={styles.inputFieldsContainer}>{children}</View>
         {Buttun}
       </View>
@@ -22,13 +30,12 @@ const Layout: FC<Props> = ({ title, children, Buttun }) => {
   );
 };
 
-export default Layout;
+export default observer(Layout);
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#f2f2f2",
     flex: 1,
   },
   lockIcon: {
@@ -37,7 +44,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   message: {
-    color: "#444444",
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,

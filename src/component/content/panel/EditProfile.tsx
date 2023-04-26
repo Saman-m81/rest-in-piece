@@ -36,6 +36,7 @@ import { useIsFocused } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { UploadImage } from "../../../core/services/api/UploadImage-api";
 import { UpdateInformation } from "../../../core/services/api/UpdateInformation-api";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 
 type Props = {};
 
@@ -224,6 +225,13 @@ const EditProfile = (props: Props) => {
     }
   };
 
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
+
   return (
     <Layout>
       <>
@@ -360,7 +368,7 @@ const EditProfile = (props: Props) => {
                 <Galery fill={"#fff"} />
               </Btn>
             </View>
-            <CustomText style={{ fontSize: 30, color: "#002D85" }}>
+            <CustomText style={{ fontSize: 30, color: theme.textcolorActive }}>
               {GetUserStore.user.fullName}
             </CustomText>
           </View>

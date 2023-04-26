@@ -31,6 +31,7 @@ type Props = {
   onPressIn?: ((e: NativeSyntheticEvent<NativeTouchEvent>) => void) | undefined;
   Estyle?: StyleProp<TextStyle>;
   editable?: boolean;
+  multiline?: boolean;
 };
 
 const Field: FC<Props> = ({
@@ -47,6 +48,7 @@ const Field: FC<Props> = ({
   onPressIn,
   Estyle,
   editable,
+  multiline,
 }) => {
   return (
     <>
@@ -67,6 +69,7 @@ const Field: FC<Props> = ({
         onChangeText={onChangeText}
         showSoftInputOnFocus={KeboradShow}
         onPressIn={onPressIn}
+        multiline={multiline}
       />
     </>
   );

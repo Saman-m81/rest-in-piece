@@ -8,6 +8,10 @@ import {
 } from "../functions/handleDesciption";
 import { Anim } from "../Animation/Animation";
 import { useIsFocused } from "@react-navigation/native";
+import { observer } from "mobx-react";
+import rootStore from "../../../store/Store";
+import { Theme } from "../../../Types/Types";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 
 type Props = {
   item: {
@@ -39,7 +43,9 @@ const Comment: FC<Props> = ({ item }) => {
     SetH(CountSentences(item.comment, 53.5) === 1 ? 95 : 115);
     SetShow(false);
   }, [isfocused]);
-
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as Theme;
+  const theme = useTheme(mythem);
   return (
     <>
       <TouchableOpacity
@@ -49,7 +55,7 @@ const Comment: FC<Props> = ({ item }) => {
           borderRadius: 20,
           marginTop: 20,
           paddingHorizontal: 10,
-          backgroundColor: "white",
+          backgroundColor: theme.CourseItem,
         }}
         onPress={() => {
           if (item.comment.length > 116) {
@@ -113,7 +119,7 @@ const Comment: FC<Props> = ({ item }) => {
             marginTop: 15,
             paddingHorizontal: 10,
             paddingVertical: 10,
-            backgroundColor: "white",
+            backgroundColor: theme.CourseItem,
           }}
         >
           <View
@@ -154,7 +160,7 @@ const Comment: FC<Props> = ({ item }) => {
   );
 };
 
-export default Comment;
+export default observer(Comment);
 
 const styles = StyleSheet.create({
   Comment: {

@@ -362,6 +362,7 @@ const FormStepsSignUp: React.FC<Props> = ({
             handleSubmit();
           }
         }}
+        disabled={loading}
         Tstyle={{ fontSize: 18, color: "white" }}
         Vstyle={{
           backgroundColor: "#0043F7",

@@ -74,6 +74,7 @@ const rootStore = RootStore.create({
       role: "",
     },
     token: "",
+    resetPasswordToken: "",
   },
   basket: {
     key: "",
@@ -86,6 +87,10 @@ const rootStore = RootStore.create({
       lock: false,
       shouldNavigate: false,
       password: "",
+    },
+    themeColor: {
+      mode: "light",
+      pallete: "blue",
     },
   },
 });

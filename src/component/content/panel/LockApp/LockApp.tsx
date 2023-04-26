@@ -90,7 +90,7 @@ const LockApp = () => {
       "hardwareBackPress",
       backAction
     );
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
   }, [Step]);
 
   return (

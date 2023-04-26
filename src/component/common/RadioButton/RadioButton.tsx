@@ -1,6 +1,8 @@
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import React, { FC, useState, useEffect } from "react";
 import CustomText from "../Text/CustomText";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 type Props = {
   array: Array<obj>;
@@ -12,6 +14,12 @@ interface obj {
   label: string;
 }
 const RadioButton: FC<Props> = ({ array, check = "", SetCheck = () => {} }) => {
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <View
       style={{ flexDirection: "row-reverse", justifyContent: "space-between" }}
@@ -30,7 +38,9 @@ const RadioButton: FC<Props> = ({ array, check = "", SetCheck = () => {} }) => {
               justifyContent: "center",
             }}
           >
-            <CustomText>{i.label}</CustomText>
+            <CustomText style={{ color: theme.textColorDescription }}>
+              {i.label}
+            </CustomText>
             <View
               style={{
                 width: 20,

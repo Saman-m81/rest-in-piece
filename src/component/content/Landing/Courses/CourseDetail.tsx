@@ -2,12 +2,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  useWindowDimensions,
-  Image,
   ScrollView,
   Dimensions,
 } from "react-native";
-import React, { FC, useEffect, useState } from "react";
+import React, { useState } from "react";
 import CustomeText from "../../../common/Text/CustomText";
 import Plus from "../../../../assets/images/svg/plus.svg";
 import Btn from "../../../common/Button/Btn";
@@ -26,6 +24,9 @@ import Like from "../../../common/Like/Like";
 import rootStore from "../../../../store/Store";
 import { observer } from "mobx-react";
 import Toast from "react-native-toast-message";
+import { Theme } from "../../../../Types/Types";
+import useTheme from "../../../../config/ThemeConfig/ThemeConfig";
+import CommentModal from "../../../common/modal/CommentModal";
 
 interface Props {
   It: Readonly<object | undefined>;
@@ -64,6 +65,9 @@ interface ComentIt {
 }
 const CourseDetail = ({ It }: Props) => {
   const { height, width } = Dimensions.get("screen");
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as Theme;
+  const theme = useTheme(mythem);
 
   const navbarHeight = (31 * height) / 100;
   const CourseItem: items = It?.CourseItem?.Course;
@@ -100,6 +104,8 @@ const CourseDetail = ({ It }: Props) => {
       (x) => x.postId === CourseItem._id && x.verified === true
     );
   const navigation = useNavigation();
+
+  const [modalShow, SetModalShow] = useState<boolean>(false);
 
   if (CourseItem || ComentsItem) {
     return (
@@ -151,7 +157,7 @@ const CourseDetail = ({ It }: Props) => {
         <View
           style={{
             alignSelf: "center",
-            backgroundColor: "white",
+            backgroundColor: theme.backMode1,
             width: "100%",
             height: height - navbarHeight + 40,
             borderTopRightRadius: 40,
@@ -225,7 +231,7 @@ const CourseDetail = ({ It }: Props) => {
                 <CustomeText
                   style={{
                     fontSize: 15,
-                    color: "#777777",
+                    color: theme.textcolorDescription2,
                     marginRight: 11,
                     textAlign: "right",
                   }}
@@ -233,7 +239,11 @@ const CourseDetail = ({ It }: Props) => {
                   {handleDescription(CourseItem.teacher.fullName, 20)}
                 </CustomeText>
                 <CustomeText
-                  style={{ fontSize: 20, color: "#002D85", textAlign: "right" }}
+                  style={{
+                    fontSize: 20,
+                    color: theme.textcolorActive,
+                    textAlign: "right",
+                  }}
                 >
                   {handleDescription(CourseItem.title, 20)}
                 </CustomeText>
@@ -258,13 +268,15 @@ const CourseDetail = ({ It }: Props) => {
                   justifyContent: "space-between",
                 }}
               >
-                <CustomeText style={{ fontSize: 13, color: "#8F8F8F" }}>
+                <CustomeText
+                  style={{ fontSize: 13, color: theme.textcolorDescription3 }}
+                >
                   تاریخ شروع :
                 </CustomeText>
                 <CustomeText
                   style={{
                     fontSize: 15,
-                    color: "#002D85",
+                    color: theme.textcolorActive,
                   }}
                 >
                   {new Date(CourseItem.startDate).toLocaleDateString("en-Us", {
@@ -289,21 +301,33 @@ const CourseDetail = ({ It }: Props) => {
               >
                 <View style={{ flexDirection: "row-reverse" }}>
                   <CustomeText
-                    style={{ fontSize: 13, color: "#8F8F8F", marginLeft: 5 }}
+                    style={{
+                      fontSize: 13,
+                      color: theme.textcolorDescription3,
+                      marginLeft: 5,
+                    }}
                   >
                     دانشجو :
                   </CustomeText>
-                  <CustomeText style={{ fontSize: 15, color: "#002D85" }}>
+                  <CustomeText
+                    style={{ fontSize: 15, color: theme.textcolorActive }}
+                  >
                     {CourseItem.students.length + " نفر"}
                   </CustomeText>
                 </View>
                 <View style={{ flexDirection: "row-reverse" }}>
                   <CustomeText
-                    style={{ fontSize: 13, color: "#8F8F8F", marginLeft: 5 }}
+                    style={{
+                      fontSize: 13,
+                      color: theme.textcolorDescription3,
+                      marginLeft: 5,
+                    }}
                   >
                     ظرفیت :
                   </CustomeText>
-                  <CustomeText style={{ fontSize: 15, color: "#002D85" }}>
+                  <CustomeText
+                    style={{ fontSize: 15, color: theme.textcolorActive }}
+                  >
                     {CourseItem.capacity + " نفر"}
                   </CustomeText>
                 </View>
@@ -316,7 +340,9 @@ const CourseDetail = ({ It }: Props) => {
                   marginVertical: 10,
                 }}
               >
-                <CustomeText style={{ fontSize: 13, color: "#3D5FA2" }}>
+                <CustomeText
+                  style={{ fontSize: 13, color: theme.textcolorDescription4 }}
+                >
                   {CorseDate.toString()}
                 </CustomeText>
                 <CustomeText style={{ fontSize: 29, color: "#CE3E2E" }}>
@@ -324,7 +350,9 @@ const CourseDetail = ({ It }: Props) => {
                 </CustomeText>
               </View>
               <View>
-                <CustomeText style={{ fontSize: 15, color: "#3D5FA2" }}>
+                <CustomeText
+                  style={{ fontSize: 15, color: theme.textcolorDescription4 }}
+                >
                   توضیحات دوره:
                 </CustomeText>
                 <CustomeText
@@ -359,8 +387,8 @@ const CourseDetail = ({ It }: Props) => {
                       alignItems: "center",
                     }}
                   >
-                    <View
-                      style={{
+                    <Btn
+                      Vstyle={{
                         backgroundColor: "#03B9FF",
                         width: 30,
                         height: 30,
@@ -368,16 +396,21 @@ const CourseDetail = ({ It }: Props) => {
                         justifyContent: "center",
                         borderRadius: 30,
                       }}
+                      Tstyle={{ display: "none" }}
+                      Press={() => SetModalShow(true)}
                     >
                       <Plus />
-                    </View>
+                    </Btn>
                     <CustomeText
                       style={{ fontSize: 13, color: "#009EDA", marginLeft: 5 }}
+                      onPress={() => SetModalShow(true)}
                     >
                       نظر جدید
                     </CustomeText>
                   </View>
-                  <CustomeText style={{ fontSize: 15, color: "#3D5FA2" }}>
+                  <CustomeText
+                    style={{ fontSize: 15, color: theme.textcolorDescription4 }}
+                  >
                     نظرات کاربران:
                   </CustomeText>
                 </View>
@@ -401,6 +434,11 @@ const CourseDetail = ({ It }: Props) => {
             </View>
           </ScrollView>
         </View>
+        <CommentModal
+          id={CourseItem._id}
+          visible={modalShow}
+          setVisible={SetModalShow}
+        />
       </View>
     );
   } else {

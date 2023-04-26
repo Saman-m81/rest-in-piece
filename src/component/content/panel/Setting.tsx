@@ -18,6 +18,12 @@ import rootStore from "../../../store/Store";
 // import ArrowLeft from "../../../assets/images/arrowLeft.svg";
 // import Lock from "../../../assets/images/lock.svg";
 import { useNavigation } from "@react-navigation/native";
+import { Formik } from "formik";
+import { ForgetPassShema } from "../../../core/validation/ForgetPass";
+import { ForgetPass } from "../../../core/services/api/ForgetPassword-api";
+import { GetStudentById } from "../../../core/services/api/GetStudentById-api";
+import { ResetPassword } from "../../../core/services/api/ResetPassword-api";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 
 type Props = {};
 
@@ -28,7 +34,17 @@ type Option = {
   children?: JSX.Element;
   Press?: (event: GestureResponderEvent) => void;
 };
-
+const paletField: { color: string }[] = [
+  {
+    color: "blue",
+  },
+  {
+    color: "red",
+  },
+  {
+    color: "green",
+  },
+];
 const Setting: FC<Props> = ({}) => {
   const SettingStore = rootStore.setting;
   const GetSettingStore = rootStore.getSettingData();
@@ -53,6 +69,32 @@ const Setting: FC<Props> = ({}) => {
       icon: Theme,
       placeholder: "پالت رنگی",
       color: "#F0A330",
+      children: (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+          }}
+        >
+          {paletField.map((i, x) => (
+            <Btn
+              key={x}
+              Vstyle={{
+                width: 25,
+                height: 25,
+                backgroundColor: i.color === "blue" ? "#4F91FF" : i.color,
+                borderRadius: 35,
+                borderWidth:
+                  GetSettingStore.themeColor.pallete === i.color ? 1 : 0,
+                marginHorizontal: x === 1 ? 10 : 0,
+              }}
+              Tstyle={{ display: "none" }}
+              Press={() => SettingStore.SetThemeColorPalete(i.color)}
+            ></Btn>
+          ))}
+        </View>
+      ),
     },
     {
       icon: Lock,
@@ -86,7 +128,47 @@ const Setting: FC<Props> = ({}) => {
   const [showHidePassword, setShowHidePassword] = useState<boolean>(true);
   const [showHidePasswordSecond, setShowHidePasswordSecond] =
     useState<boolean>(true);
+  const GetUserStore = rootStore.getRegisterationData();
+  const RegisterStore = rootStore.registration;
+  const [SubmitLoading, SetSubmitLoading] = useState<boolean>(false);
+  const handlesubmit = async (val: {
+    password: string;
+    confirmPassword: string;
+  }) => {
+    const res = await ForgetPass({
+      email: GetUserStore.user.email,
+      setIsLoad: SetSubmitLoading,
+    });
+    if (res === true) {
+      const response = await GetStudentById({
+        id: GetUserStore.user._id,
+        setIsLoad: SetSubmitLoading,
+      });
+      if (response) {
+        const resetPasswordExpires = response.resetPasswordExpires;
+        const resetPasswordToken = response.resetPasswordToken;
+        RegisterStore.SetResetPasswordToken(resetPasswordToken);
+        ResetPassword({
+          password: val.password,
+          setIsLoad: SetSubmitLoading,
+          Token: resetPasswordToken,
+        });
+      }
+    }
+    if (res === 405) {
+      ResetPassword({
+        password: val.password,
+        setIsLoad: SetSubmitLoading,
+        Token: GetUserStore.resetPasswordToken,
+      });
+    }
+  };
 
+  const mythem = GetSettingStore.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <Layout>
       <>
@@ -114,7 +196,7 @@ const Setting: FC<Props> = ({}) => {
                     <CustomText
                       style={{
                         fontSize: 17,
-                        color: "#474747",
+                        color: theme.textColor,
                         marginRight: 10,
                       }}
                     >
@@ -138,111 +220,130 @@ const Setting: FC<Props> = ({}) => {
               </Btn>
             ))}
           </View>
-          <View>
-            <CustomText style={{ color: "#1048B7", fontSize: 18 }}>
-              تغییر رمز عبور:
-            </CustomText>
-            <>
-              <View>
-                <Field
-                  placeholder="رمز عبور"
-                  passBool={showHidePassword ? true : false}
-                  style={{
-                    padding: 10,
-                    paddingHorizontal: 50,
-                    width: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 60,
-                    position: "relative",
-                    height: 50,
-                    borderWidth: 1,
-                    borderColor: "#E3E6E8",
-                  }}
-                />
-                <Lock style={{ position: "absolute", right: 15, top: 26 }} />
-                {!showHidePassword ? (
-                  <CloseEye
-                    style={{ position: "absolute", left: 15, top: 30 }}
-                    fill="gray"
-                    onPress={() => setShowHidePassword(!showHidePassword)}
-                  />
-                ) : (
-                  <Eye
-                    style={{ position: "absolute", left: 15, top: 30 }}
-                    fill="gray"
-                    onPress={() => setShowHidePassword(!showHidePassword)}
-                  />
-                )}
-              </View>
-              <View>
-                <Field
-                  placeholder="رمز عبور"
-                  passBool={showHidePasswordSecond ? true : false}
-                  style={{
-                    padding: 10,
-                    paddingHorizontal: 50,
-                    width: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 60,
-                    position: "relative",
-                    height: 50,
-                    borderWidth: 1,
-                    borderColor: "#E3E6E8",
-                  }}
-                />
-                <Lock style={{ position: "absolute", right: 15, top: 26 }} />
-                {!showHidePasswordSecond ? (
-                  <CloseEye
-                    style={{ position: "absolute", left: 15, top: 30 }}
-                    fill="gray"
-                    onPress={() =>
-                      setShowHidePasswordSecond(!showHidePasswordSecond)
-                    }
-                  />
-                ) : (
-                  <Eye
-                    style={{ position: "absolute", left: 15, top: 30 }}
-                    fill="gray"
-                    onPress={() =>
-                      setShowHidePasswordSecond(!showHidePasswordSecond)
-                    }
-                  />
-                )}
-              </View>
-            </>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
+          <Formik
+            onSubmit={handlesubmit}
+            initialValues={{ password: "", confirmPassword: "" }}
+            validationSchema={ForgetPassShema}
           >
-            <Btn
-              Vstyle={{
-                borderWidth: 1,
-                borderColor: "#FF0000",
-                height: 40,
-                alignItems: "center",
-                justifyContent: "center",
-                width: 130,
-                borderRadius: 30,
-              }}
-              Tstyle={{ fontSize: 15, color: "#FF0000" }}
-              title="بازنشانی"
-            />
-            <Btn
-              Vstyle={{
-                backgroundColor: "#04A641",
-                height: 40,
-                alignItems: "center",
-                justifyContent: "center",
-                width: 130,
-                borderRadius: 30,
-              }}
-              Tstyle={{ fontSize: 15, color: "#fff" }}
-              title="تغییر رمز عبور"
-            />
-          </View>
+            {({ handleChange, handleSubmit, values, errors }) => (
+              <>
+                <View>
+                  <CustomText style={{ color: "#1048B7", fontSize: 18 }}>
+                    تغییر رمز عبور:
+                  </CustomText>
+                  <>
+                    <CustomText
+                      style={{
+                        textAlign: "right",
+                        marginTop: 5,
+                        top: 5,
+                        color: "#555",
+                        alignItems: "center",
+                      }}
+                    >
+                      {errors.password
+                        ? errors.password
+                        : errors.confirmPassword}
+                    </CustomText>
+                    <View>
+                      <Field
+                        placeholder="رمز عبور"
+                        passBool={showHidePassword ? true : false}
+                        style={{
+                          padding: 10,
+                          paddingHorizontal: 50,
+                          width: "100%",
+                          backgroundColor: "#fff",
+                          borderRadius: 60,
+                          position: "relative",
+                          height: 50,
+                          borderWidth: 1,
+                          borderColor: "#E3E6E8",
+                        }}
+                        value={values.password}
+                        onChangeText={handleChange("password")}
+                      />
+                      <Lock
+                        style={{ position: "absolute", right: 15, top: 26 }}
+                      />
+                      {!showHidePassword ? (
+                        <CloseEye
+                          style={{ position: "absolute", left: 15, top: 30 }}
+                          fill="gray"
+                          onPress={() => setShowHidePassword(!showHidePassword)}
+                        />
+                      ) : (
+                        <Eye
+                          style={{ position: "absolute", left: 15, top: 30 }}
+                          fill="gray"
+                          onPress={() => setShowHidePassword(!showHidePassword)}
+                        />
+                      )}
+                    </View>
+                    <View>
+                      <Field
+                        placeholder="رمز عبور"
+                        passBool={showHidePasswordSecond ? true : false}
+                        style={{
+                          padding: 10,
+                          paddingHorizontal: 50,
+                          width: "100%",
+                          backgroundColor: "#fff",
+                          borderRadius: 60,
+                          position: "relative",
+                          height: 50,
+                          borderWidth: 1,
+                          borderColor: "#E3E6E8",
+                        }}
+                        value={values.confirmPassword}
+                        onChangeText={handleChange("confirmPassword")}
+                      />
+                      <Lock
+                        style={{ position: "absolute", right: 15, top: 26 }}
+                      />
+                      {!showHidePasswordSecond ? (
+                        <CloseEye
+                          style={{ position: "absolute", left: 15, top: 30 }}
+                          fill="gray"
+                          onPress={() =>
+                            setShowHidePasswordSecond(!showHidePasswordSecond)
+                          }
+                        />
+                      ) : (
+                        <Eye
+                          style={{ position: "absolute", left: 15, top: 30 }}
+                          fill="gray"
+                          onPress={() =>
+                            setShowHidePasswordSecond(!showHidePasswordSecond)
+                          }
+                        />
+                      )}
+                    </View>
+                  </>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Btn
+                    Vstyle={{
+                      backgroundColor: "#04A641",
+                      height: 40,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: 130,
+                      borderRadius: 30,
+                    }}
+                    Tstyle={{ fontSize: 15, color: "#fff" }}
+                    title="تغییر رمز عبور"
+                    Press={() => handleSubmit()}
+                  />
+                </View>
+              </>
+            )}
+          </Formik>
         </View>
       </>
     </Layout>

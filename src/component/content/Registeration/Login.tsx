@@ -64,6 +64,11 @@ const Login: FC<Props> = observer(({}) => {
     inputRange: [30, 34],
     outputRange: ["30deg", "34deg"],
   });
+  const BottomImageB = useRef(new Animated.Value(30)).current;
+  const BottomImageBottom = BottomImageB.interpolate({
+    inputRange: [9, 30],
+    outputRange: ["9%", "30%"],
+  });
 
   useEffect(() => {
     if (isFocused) {
@@ -82,6 +87,7 @@ const Login: FC<Props> = observer(({}) => {
         Anim(TopImageR, 41, 800);
         Anim(TopImageB, 80, 800);
         Anim(TopImageRo, 30, 800);
+        Anim(BottomImageB, 9, 800);
       }
     } else {
       if (!animate) {
@@ -95,6 +101,7 @@ const Login: FC<Props> = observer(({}) => {
       } else {
         Anim(flexGrow, 2, 800);
         Anim(flexNegativeGrow, 3, 800);
+        Anim(BottomImageB, 30, 800);
       }
     }
   }, [isFocused]);
@@ -205,6 +212,7 @@ const Login: FC<Props> = observer(({}) => {
             </View>
             <Btn
               title="ورود"
+              disabled={loading}
               Press={() => {
                 handleSubmit();
               }}
@@ -315,6 +323,7 @@ const Login: FC<Props> = observer(({}) => {
       TopImageRight={TopImageRight}
       TopImageB={TopImageBottom}
       TopImageRotate={TopImageRotate}
+      BottomImageB={BottomImageBottom}
     />
   );
 });

@@ -13,6 +13,8 @@ import Poly from "../../../assets/images/PolygonS.svg";
 import PolyBorder from "../../../assets/images/PolygonBorder.svg";
 import { Anim } from "../../common/Animation/Animation";
 import CustomText from "../../common/Text/CustomText";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 type Props = {
   Show: boolean;
@@ -63,12 +65,21 @@ const Splash: FC<Props> = ({ Show }) => {
   if (!Show) {
     return null;
   }
+
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
+
   return (
     <View
       style={{
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
+        backgroundColor: theme.backMode1,
       }}
     >
       <Animated.View
@@ -86,7 +97,7 @@ const Splash: FC<Props> = ({ Show }) => {
         <CustomText
           style={{
             fontSize: 23,
-            color: "#00469A",
+            color: theme.textcolorlogo,
             marginTop: 11,
             textAlign: "center",
             alignSelf: "center",
@@ -106,7 +117,7 @@ const Splash: FC<Props> = ({ Show }) => {
       >
         <Poly
           width={"100%"} // 78
-          fill="#EAF5FF"
+          fill={theme.polygen}
         />
       </Animated.View>
       <Animated.View
@@ -119,7 +130,7 @@ const Splash: FC<Props> = ({ Show }) => {
           height: "51%",
         }}
       >
-        <Poly width={"100%"} height={"100%"} fill="#EAF5FF" />
+        <Poly width={"100%"} height={"100%"} fill={theme.polygen} />
       </Animated.View>
       <Animated.View
         style={{

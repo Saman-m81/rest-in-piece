@@ -8,6 +8,8 @@ import {
 import React, { FC } from "react";
 import Modal from "react-native-modal";
 import * as animatable from "react-native-animatable";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 type Props = {
   visible: boolean;
@@ -163,7 +165,12 @@ const ModalWrapper: FC<Props> = ({
   Modalstyle,
 }) => {
   const { height } = useWindowDimensions();
-
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <Modal
       deviceHeight={height + 50}
@@ -184,7 +191,7 @@ const ModalWrapper: FC<Props> = ({
             }
       }
       onBackdropPress={() => setVisible(false)}
-      backdropColor="rgba(0,57,152,.55)"
+      backdropColor={theme.drawerOverlay}
       isVisible={visible}
     >
       <View

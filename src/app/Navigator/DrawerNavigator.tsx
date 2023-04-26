@@ -5,9 +5,12 @@ import CourseDetail from "../../component/content/Landing/Courses/CourseDetail";
 import TabNavigator from "./TabNavigator";
 import WrapperContent from "../../component/common/DrawerContent/MyDrawer";
 import LockApp from "../../component/content/panel/LockApp/LockApp";
+import useTheme from "../../config/ThemeConfig/ThemeConfig";
 const Drawer = createDrawerNavigator();
 
 const SecDrawerNavigator: FC<any> = ({}) => {
+  const theme = useTheme({ mode: "dark", pallete: "blue" });
+
   return (
     <Drawer.Navigator
       id="sec"
@@ -15,7 +18,7 @@ const SecDrawerNavigator: FC<any> = ({}) => {
         return <WrapperContent props={props} />;
       }}
       screenOptions={{
-        overlayColor: "rgba(0,57,152,.55)",
+        overlayColor: theme.drawerOverlay,
         drawerPosition: "right",
         headerShown: false,
         drawerType: "front",
@@ -33,6 +36,7 @@ const SecDrawerNavigator: FC<any> = ({}) => {
   );
 };
 const DraweWrapper: FC<any> = ({}) => {
+  const theme = useTheme({ mode: "dark", pallete: "blue" });
   return (
     <Drawer.Navigator
       id="wrap"
@@ -40,7 +44,7 @@ const DraweWrapper: FC<any> = ({}) => {
         return <WrapperContent props={props} />;
       }}
       screenOptions={{
-        overlayColor: "rgba(0,57,152,.55)",
+        overlayColor: theme.drawerOverlay,
         drawerPosition: "right",
         headerShown: false,
         drawerType: "front",

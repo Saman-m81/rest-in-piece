@@ -17,6 +17,7 @@ import rootStore from "../../../store/Store";
 import { observer } from "mobx-react";
 import Toast from "react-native-toast-message";
 import Like from "../Like/Like";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 type Props = {
   index: number;
   item: object;
@@ -116,6 +117,13 @@ const CourseItem: FC<Props> = ({ index, item, Comment }) => {
       );
     }
   };
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -141,7 +149,7 @@ const CourseItem: FC<Props> = ({ index, item, Comment }) => {
         <View
           style={{
             width: "90%",
-            backgroundColor: "white",
+            backgroundColor: theme.CourseItem,
             borderRadius: 20,
             height: "100%",
             elevation: 8,
@@ -154,7 +162,6 @@ const CourseItem: FC<Props> = ({ index, item, Comment }) => {
           <View
             style={{
               paddingVertical: 10,
-              backgroundColor: "white",
               height: "100%",
               flexDirection: "row-reverse",
               width: "100%",
@@ -172,7 +179,7 @@ const CourseItem: FC<Props> = ({ index, item, Comment }) => {
                 }}
               >
                 <Text
-                  style={{ fontSize: 17 }}
+                  style={{ fontSize: 17, color: theme.textColor }}
                   title={handleDescription(Course.title, 18)}
                 />
               </View>
@@ -194,7 +201,11 @@ const CourseItem: FC<Props> = ({ index, item, Comment }) => {
                   }}
                 >
                   <Text
-                    style={{ fontSize: 12, marginRight: 6, color: "#696969" }}
+                    style={{
+                      fontSize: 12,
+                      marginRight: 6,
+                      color: theme.textColorDescription,
+                    }}
                     title={Course.teacher.fullName}
                   />
                   <Doctor />

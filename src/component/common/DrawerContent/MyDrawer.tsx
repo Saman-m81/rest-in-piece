@@ -21,6 +21,7 @@ import CustomeText from "../Text/CustomText";
 import { observer } from "mobx-react";
 import rootStore from "../../../store/Store";
 import { handleDescription } from "../functions/handleDesciption";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 const drawerBar = [
   {
     title: "پروفایل کاربری",
@@ -51,10 +52,16 @@ const drawerBar = [
 
 const MyDrawer = ({ props }: any): JSX.Element => {
   //DetdrawerW
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   const Field = props.state.routes[0].params?.Field;
   const handleColor = ({
     index,
-    ActiveColor = "#0136C4",
+    ActiveColor = theme.textcolorActive,
     DeActiveColor = "#686868",
   }: {
     index: number;
@@ -80,7 +87,6 @@ const MyDrawer = ({ props }: any): JSX.Element => {
 
   const UserStore = rootStore.registration;
   const GetUserStore = rootStore.getRegisterationData();
-
   return (
     <View
       style={{
@@ -88,6 +94,7 @@ const MyDrawer = ({ props }: any): JSX.Element => {
         paddingBottom: 60,
         paddingTop: 50,
         height: "100%",
+        backgroundColor: theme.drawer,
       }}
     >
       <View style={{ position: "absolute", left: 18 }}>
@@ -124,7 +131,7 @@ const MyDrawer = ({ props }: any): JSX.Element => {
             }
           />
           <CustomeText
-            style={{ color: "#002D85", fontSize: 25, marginTop: 10 }}
+            style={{ color: theme.textColor, fontSize: 25, marginTop: 10 }}
           >
             {GetUserStore.Active
               ? handleDescription(GetUserStore.user.fullName, 12)
@@ -134,7 +141,7 @@ const MyDrawer = ({ props }: any): JSX.Element => {
         <View>
           {drawerBar.map(
             (item, index) =>
-              (GetUserStore.Active || index > 0) && (
+              (GetUserStore.Active || (index > 0 && index < 4)) && (
                 <Btn
                   Vstyle={{
                     flexDirection: "row",
@@ -185,7 +192,7 @@ const MyDrawer = ({ props }: any): JSX.Element => {
           <Btn
             Press={() => props.navigation.navigate("LogIn")}
             Vstyle={{
-              backgroundColor: "#eaeaea",
+              backgroundColor: theme.drawerButtenLogin,
               borderRadius: 50,
               alignItems: "center",
               justifyContent: "space-evenly",
@@ -195,7 +202,7 @@ const MyDrawer = ({ props }: any): JSX.Element => {
               alignSelf: "center",
             }}
             title="ورود"
-            Tstyle={{ fontSize: 15, color: "#002D85" }}
+            Tstyle={{ fontSize: 15, color: theme.textColor }}
           ></Btn>
         )}
       </View>

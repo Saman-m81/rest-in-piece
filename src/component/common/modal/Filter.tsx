@@ -20,6 +20,7 @@ import { Anim } from "../Animation/Animation";
 import CustomeCategory from "./FilterCategory";
 import Spiner from "../../../assets/images/svg/spinner.svg";
 import OnOff from "../OnOff/OnOff";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
 const Sort: Array<{ value: string; label: string }> = [
   { value: "name", label: "نام" },
   { value: "cost", label: "قیمت" },
@@ -55,10 +56,26 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
   const [CapacityLabel, SetCapacity] = useState([
     ...GetfilteringStore.Capacity,
   ]);
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
 
   return (
     <>
-      <ModalWrapper setVisible={setVisible} visible={visible}>
+      <ModalWrapper
+        style={{
+          borderRadius: 30,
+          backgroundColor: theme.drawer,
+          width: "100%",
+          paddingHorizontal: "10%",
+          paddingVertical: "5.5%",
+        }}
+        setVisible={setVisible}
+        visible={visible}
+      >
         <>
           <View
             style={{
@@ -156,12 +173,14 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
             }}
           >
             <CustomeText
-              style={{ fontSize: 15, color: "#707070" }}
+              style={{ fontSize: 15, color: theme.textColorDescription }}
               title="محدوده قیمت"
             />
             <View style={{ flexDirection: "row" }}>
-              <CustomeText>{CostLabel[0].toFixed()}</CustomeText>
-              <CustomeText style={{ marginLeft: 10 }}>
+              <CustomeText style={{ fontSize: 15, color: theme.topText }}>
+                {CostLabel[0].toFixed()}
+              </CustomeText>
+              <CustomeText style={{ marginLeft: 10, color: theme.topText }}>
                 {CostLabel[1].toFixed()}
               </CustomeText>
             </View>
@@ -188,6 +207,8 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
               onValuesChangeFinish={(val) => {
                 filteringStore.SetCost([val[0], val[1]]);
               }}
+              markerStyle={{ backgroundColor: theme.lightBackground }}
+              selectedStyle={{ backgroundColor: theme.lightBackground }}
             />
           </View>
 
@@ -198,12 +219,14 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
             }}
           >
             <CustomeText
-              style={{ fontSize: 15, color: "#707070" }}
+              style={{ fontSize: 15, color: theme.textColorDescription }}
               title="محدوده ظرفیت"
             />
             <View style={{ flexDirection: "row" }}>
-              <CustomeText>{CapacityLabel[0].toFixed()}</CustomeText>
-              <CustomeText style={{ marginLeft: 10 }}>
+              <CustomeText style={{ color: theme.topText }}>
+                {CapacityLabel[0].toFixed()}
+              </CustomeText>
+              <CustomeText style={{ marginLeft: 10, color: theme.topText }}>
                 {CapacityLabel[1].toFixed()}
               </CustomeText>
             </View>
@@ -227,6 +250,8 @@ const Filter: FC<Props> = ({ visible, setVisible }) => {
                 filteringStore.SetCapacity(val);
               }}
               sliderLength={220}
+              markerStyle={{ backgroundColor: theme.lightBackground }}
+              selectedStyle={{ backgroundColor: theme.lightBackground }}
             />
           </View>
 

@@ -3,6 +3,8 @@ import ModalWrapper from "./ModalWrapper";
 import CustomeText from "../Text/CustomText";
 import ArrowDown from "../../../assets/images/svg/arrowDown.svg";
 import React, { useState, FC } from "react";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 
 interface Props {
   title: string;
@@ -15,6 +17,12 @@ interface Props {
 const CustomeCategory: FC<Props> = ({ title, style, arr, check, SetCheck }) => {
   const [vis, SetVis] = useState<boolean>(false);
   const bookmark = arr.findIndex((c) => c.value === check);
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
   return (
     <>
       <TouchableOpacity
@@ -76,7 +84,12 @@ const CustomeCategory: FC<Props> = ({ title, style, arr, check, SetCheck }) => {
               key={x}
             >
               <View>
-                <CustomeText style={{ textAlign: "center" }} title={i.label} />
+                <CustomeText
+                  style={{
+                    textAlign: "center",
+                  }}
+                  title={i.label}
+                />
               </View>
             </TouchableOpacity>
           ))}

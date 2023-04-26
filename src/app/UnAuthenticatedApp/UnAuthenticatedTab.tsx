@@ -21,6 +21,7 @@ import { observer } from "mobx-react";
 import rootStore from "../../store/Store";
 import Setting from "../../component/content/panel/Setting";
 import EditProfile from "../../component/content/panel/EditProfile";
+import useTheme from "../../config/ThemeConfig/ThemeConfig";
 
 type Props = {
   navigation?: any;
@@ -36,28 +37,7 @@ const UnAuthenticatedTab: FC<Props> = ({ navigation }) => {
   const PaddingDecrese = useRef(new Animated.Value(navheight)).current;
   const HeightGrow = useRef(new Animated.Value(navheight)).current;
   const PaddingGrow = useRef(new Animated.Value(0)).current;
-  const IsFocused = useIsFocused();
-  const [backPressed, setBackPressed] = useState<number>(0);
-  const GetRegisterationStore = rootStore.getRegisterationData();
-  useEffect(() => {
-    if (IsFocused) {
-      if (GetRegisterationStore.Active) {
-        const backAction = () => {
-          if (backPressed + 2000 >= Date.now()) {
-            BackHandler.exitApp();
-          }
-          setBackPressed(Date.now());
-          Toast.show({ text1: "برای خروج دوبار برگردید", type: "info" });
-          return true;
-        };
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
-        );
-        return () => backHandler.remove();
-      }
-    }
-  }, [IsFocused, backPressed, GetRegisterationStore.Active]);
+
   const route = useRoute();
   useEffect(() => {
     const p = route.params?.open;
@@ -65,6 +45,12 @@ const UnAuthenticatedTab: FC<Props> = ({ navigation }) => {
       navigation.getParent("wrap").openDrawer();
     }
   }, [route.name, route.params]);
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
 
   return (
     <Tab.Navigator
@@ -73,8 +59,14 @@ const UnAuthenticatedTab: FC<Props> = ({ navigation }) => {
         tabBarStyle: {
           borderTopLeftRadius: 35,
           borderTopRightRadius: 35,
-          backgroundColor: "#4F91FF",
+          backgroundColor: theme.lightBackground,
           height: "7.5%",
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          borderTopWidth: 0,
+          elevation: 0,
         },
         tabBarShowLabel: false,
         headerShown: true,
@@ -90,6 +82,10 @@ const UnAuthenticatedTab: FC<Props> = ({ navigation }) => {
             PaddingGrow={PaddingGrow}
           />
         ),
+      }}
+      sceneContainerStyle={{
+        backgroundColor: theme.TabBackgroundColor,
+        paddingBottom: "17%",
       }}
       initialRouteName="Course"
     >

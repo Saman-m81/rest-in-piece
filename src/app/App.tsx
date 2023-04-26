@@ -70,6 +70,17 @@ const App: FC<Props> = observer(({}): JSX.Element => {
   const initialLog = async () => {
     const token = await AsyncStorage.getItem("token");
     const user = await AsyncStorage.getItem("user");
+    const ResetPasswordToken = await AsyncStorage.getItem("ResetPasswordToken");
+    if (ResetPasswordToken) {
+      RegisterStore.SetResetPasswordToken(ResetPasswordToken);
+    }
+    const myTheme = await AsyncStorage.getItem("theme");
+    if (myTheme) {
+      const theme = JSON.parse(myTheme) as { mode: string; pallete: string };
+      SettingStore.SetThemeColor(theme, true);
+    } else {
+      SettingStore.SetThemeColor({ mode: "light", pallete: "blue" }, false);
+    }
     if (!token || !user) {
       BasketStore.SetAllShop([]);
       BasketStore.SetAllFavorite([]);
@@ -94,7 +105,6 @@ const App: FC<Props> = observer(({}): JSX.Element => {
       SettingStore.SetLock(false);
       SettingStore.SetNavigate(true);
     }
-
     BasketStore.SetAllShop(Basket);
     BasketStore.SetAllFavorite(Fave);
     RegisterStore.SetActive(JSON.parse(user), token);

@@ -17,11 +17,19 @@ type Props = {
   Press?: ((event: GestureResponderEvent) => void) | undefined;
   title?: string;
   children?: JSX.Element;
+  disabled?: boolean;
 };
 
-const Btn: FC<Props> = ({ Vstyle, Tstyle, Press, title, children }) => {
+const Btn: FC<Props> = ({
+  Vstyle,
+  Tstyle,
+  Press,
+  title,
+  children,
+  disabled,
+}) => {
   return (
-    <TouchableOpacity activeOpacity={0.5} onPress={Press}>
+    <TouchableOpacity disabled={disabled} activeOpacity={0.5} onPress={Press}>
       <View style={Vstyle ? Vstyle : styles.button}>
         <CustomText style={Tstyle ? Tstyle : styles.text} title={title} />
         {children}

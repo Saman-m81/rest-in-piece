@@ -4,10 +4,18 @@ import Layout from "./Layout";
 import Btn from "../../common/Button/Btn";
 import { useNavigation } from "@react-navigation/native";
 import Text from "../../common/Text/CustomText";
+import useTheme from "../../../config/ThemeConfig/ThemeConfig";
+import rootStore from "../../../store/Store";
 type Props = {};
 
 const Welcome: FC<Props> = ({}) => {
   const navigation = useNavigation();
+  const GetSettingData = rootStore.getSettingData();
+  const mythem = GetSettingData.themeColor as {
+    mode: "dark" | "light";
+    pallete: "blue" | "red" | "green";
+  };
+  const theme = useTheme(mythem);
 
   const Bottom: JSX.Element = (
     <View
@@ -61,7 +69,30 @@ const Welcome: FC<Props> = ({}) => {
       />
     </View>
   );
-
+  const Top: JSX.Element = (
+    <View
+      style={{
+        justifyContent: "space-between",
+        alignItems: "center",
+        top: 40,
+      }}
+    >
+      <Image
+        source={require("../../../assets/images/logo.png")}
+        style={{ width: 115, height: 115 }}
+      />
+      <Text
+        style={{
+          fontSize: 23,
+          color: theme.textcolorlogo,
+          marginTop: 11,
+          alignItems: "center",
+          alignSelf: "center",
+        }}
+        title="آکادمی کدنویسی بحر"
+      />
+    </View>
+  );
   return (
     <Layout
       Bchildren={Bottom}
@@ -100,30 +131,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#0043F7",
   },
 });
-
-const Top: JSX.Element = (
-  <View
-    style={{
-      justifyContent: "space-between",
-      alignItems: "center",
-      top: 40,
-    }}
-  >
-    <Image
-      source={require("../../../assets/images/logo.png")}
-      style={{ width: 115, height: 115 }}
-    />
-    <Text
-      style={{
-        fontSize: 23,
-        color: "#00469A",
-        marginTop: 11,
-        alignItems: "center",
-        alignSelf: "center",
-      }}
-      title="آکادمی کدنویسی بحر"
-    />
-  </View>
-);
 
 export default Welcome;

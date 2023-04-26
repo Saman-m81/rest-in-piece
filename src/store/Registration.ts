@@ -31,6 +31,7 @@ export const Registration = types
     Active: types.boolean,
     user: UserInterface,
     token: types.string,
+    resetPasswordToken: types.string,
   })
   .actions((self) => ({
     SetActive(data: UserItem, token: string) {
@@ -59,5 +60,11 @@ export const Registration = types
       AsyncStorage.removeItem("token");
       AsyncStorage.removeItem("user");
       AsyncStorage.removeItem("password");
+      AsyncStorage.removeItem("ResetPasswordToken");
+      AsyncStorage.removeItem("theme");
+    },
+    SetResetPasswordToken(data: string) {
+      self.resetPasswordToken = data;
+      AsyncStorage.setItem("ResetPasswordToken", self.resetPasswordToken);
     },
   }));
